@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">Check Hotel</string>
+    <string name="user">Usuário</string>
+    <string name="password">Senha</string>
+    <string name="forgot_password"><u>Esqueceu sua senha?</u></string>
+    <string name="no_acc"><u>Não possui uma conta?</u></string>
+    <string name="singup"><u>Cadastre-se</u></string>
+    <string name="login"><u>ENTRAR</u></string>
+
+</resources>
