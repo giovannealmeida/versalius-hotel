@@ -1,11 +1,93 @@
 <resources>
-
-    <string name="app_name">Check Hotel</string>
-    <string name="user">Usuário</string>
-    <string name="password">Senha</string>
+    <string name="app_name">CHECK HOTEL</string>
+    <string name="action_login">ENTRAR</string>
+    <string name="copyright">© Copyright 2016 VERSALIUS</string>
     <string name="forgot_password"><u>Esqueceu sua senha?</u></string>
-    <string name="no_acc"><u>Não possui uma conta?</u></string>
     <string name="singup"><u>Cadastre-se</u></string>
-    <string name="login"><u>ENTRAR</u></string>
+    <string name="dont_have_acc">Não possui uma conta?</string>
 
+    <!--Titles-->
+    <string name="title_signup">CADASTRO</string>
+    <string name="title_dialog_permission">Permissão requerida</string>
+
+    <!--Hints-->
+    <string name="hint_service">Serviço</string>
+    <string name="hint_city">Cidade</string>
+    <string name="hint_city_required">Cidade *</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_email_required">Email *</string>
+    <string name="hint_password">Senha</string>
+    <string name="hint_password_required">Senha *</string>
+    <string name="hint_full_name">Nome Completo *</string>
+    <string name="hint_rg">RG *</string>
+    <string name="hint_shipping_agent">Orgão Expedidor *</string>
+    <string name="hint_cpf">CPF *</string>
+    <string name="hint_nationality">Nacionalidade *</string>
+    <string name="hint_profession">Profissão *</string>
+    <string name="hint_street">Rua *</string>
+    <string name="hint_neighborhood">Bairro</string>
+    <string name="hint_zip_code">CEP</string>
+    <string name="hint_password_again">Repita a senha</string>
+    <string name="hint_continent">Continente *</string>
+    <string name="hint_country">País *</string>
+    <string name="hint_state">Estado *</string>
+    <string name="hint_birth_date">Data de nascimento *</string>
+    <string name="hint_phone">Telefone *</string>
+
+    <!--Labels-->
+    <string name="lb_radio_male">Masculino</string>
+    <string name="lb_radio_female">Feminino</string>
+    <string name="lb_gender">Sexo *</string>
+    <string name="lb_facebook">facebook.com/</string>
+    <string name="lb_twitter">twitter.com/</string>
+    <string name="lb_site">http://</string>
+
+    <!--Mensagens de erros-->
+    <string name="err_msg_service">Insira um serviço</string>
+    <string name="err_msg_city">Insira uma cidade</string>
+    <string name="err_msg_empty_name">Insira o nome completo</string>
+    <string name="err_msg_empty_email">Insira um e-mail válido</string>
+    <string name="err_msg_invalid_email">Email inválido</string>
+    <string name="err_msg_invalid_site">Site inválido</string>
+    <string name="err_msg_invalid_facebook">Facebook inválido</string>
+    <string name="err_msg_invalid_twitter">Twitter inválido</string>
+    <string name="err_msg_short_password">A senha deve possuir de 6 a 22 caracteres</string>
+    <string name="err_msg_dont_match_password">As senhas não são iguais</string>
+    <string name="err_msg_invalid_birthday">Data de nascimento inválida</string>
+    <string name="err_msg_must_select_one">Selecione uma opção</string>
+    <string name="err_msg_invalid_phone">Número inválido</string>
+    <string name="hint_country_spinner">Selecione um país…</string>
+    <string name="hint_state_spinner">Selecione um estado…</string>
+    <string name="hint_city_spinner">Selecione uma cidade…</string>
+    <string name="err_msg_must_select_city">Selecione uma cidade</string>
+    <string name="err_msg_must_select_continent">Selecione um continente</string>
+    <string name="err_msg_must_select_country">Selecione um país</string>
+    <string name="err_msg_must_select_state">Selecione um estado</string>
+    <string name="err_msg_existing_email">Este email já está em uso</string>
+    <string name="err_msg_server_fail">Houve uma falha. Tente novamente mais tarde.</string>
+    <string name="dialog_permission_agree_button">Ok</string>
+    <string name="dialog_permission_disagree_button">Cancelar</string>
+    <string name="title_crop_activity">Cortar Imagem</string>
+
+    <!--Arrays-->
+    <string-array name="array_continents">
+        <item>Selecione um continente…</item> <!-- Valor default -->
+        <item>Africa</item>
+        <item>Antarctica</item>
+        <item>Asia</item>
+        <item>Europe</item>
+        <item>North America</item>
+        <item>Oceania</item>
+        <item>South America</item>
+    </string-array>
+    <string-array name="array_continent_id">
+        <item>0</item> <!-- Valor default -->
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
 </resources>
