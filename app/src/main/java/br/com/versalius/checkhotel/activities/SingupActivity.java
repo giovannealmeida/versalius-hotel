@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -25,7 +24,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -72,6 +70,14 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private TextInputLayout tilEmail;
     private TextInputLayout tilPassword;
     private TextInputLayout tilPasswordAgain;
+    private TextInputLayout tilIdentification;
+    private TextInputLayout tilShippingAgent;
+    private TextInputLayout tilCPF;
+    private TextInputLayout tilNationality;
+    private TextInputLayout tilProfession;
+    private TextInputLayout tilStreet;
+    private TextInputLayout tilNeighborhood;
+    private TextInputLayout tilZipCode;
     private TextInputLayout tilPhone;
 
     private EditText etName;
@@ -79,11 +85,22 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private EditText etPassword;
     private EditText etPasswordAgain;
     private EditText etBirthday;
+    private EditText etIdentification;
+    private EditText etShippingAgent;
+    private EditText etCPF;
+    private EditText etNationality;
+    private EditText etProfession;
+    private EditText etStreet;
+    private EditText etNeighborhood;
+    private EditText etZipCode;
     private EditText etPhone;
 
     private RadioGroup rgGender;
     private RadioButton rbMale;
     private RadioButton rbFemale;
+    private RadioGroup rgIdentification;
+    private RadioButton rbRG;
+    private RadioButton rbPassport;
 
     private Spinner spCity;
     private Spinner spContinent;
@@ -155,6 +172,14 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         tilEmail = (TextInputLayout) findViewById(R.id.tilEmail);
         tilPassword = (TextInputLayout) findViewById(R.id.tilPassword);
         tilPasswordAgain = (TextInputLayout) findViewById(R.id.tilPasswordAgain);
+        tilIdentification = (TextInputLayout) findViewById(R.id.tilIdentification);
+        tilShippingAgent = (TextInputLayout) findViewById(R.id.tilShippingAgent);
+        tilCPF = (TextInputLayout) findViewById(R.id.tilCpf);
+        tilNationality = (TextInputLayout) findViewById(R.id.tilNationality);
+        tilProfession = (TextInputLayout) findViewById(R.id.tilProfession);
+        tilStreet = (TextInputLayout) findViewById(R.id.tilStreet);
+        tilNeighborhood = (TextInputLayout) findViewById(R.id.tilNeighborhood);
+        tilZipCode = (TextInputLayout) findViewById(R.id.tilZipCode);
         tilPhone = (TextInputLayout) findViewById(R.id.tilPhone);
 
         /* Instanciando campos */
@@ -163,6 +188,14 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         etPassword = (EditText) findViewById(R.id.etPassword);
         etPasswordAgain = (EditText) findViewById(R.id.etPasswordAgain);
         etBirthday = (EditText) findViewById(R.id.etBirthday);
+        etIdentification = (EditText) findViewById(R.id.etIdentification);
+        etShippingAgent = (EditText) findViewById(R.id.etShippingAgent);
+        etCPF = (EditText) findViewById(R.id.etCpf);
+        etNationality = (EditText) findViewById(R.id.etNationality);
+        etProfession = (EditText) findViewById(R.id.etProfession);
+        etStreet = (EditText) findViewById(R.id.etStreet);
+        etNeighborhood = (EditText) findViewById(R.id.etNeighborhood);
+        etZipCode = (EditText) findViewById(R.id.etZipCode);
         etPhone = (EditText) findViewById(R.id.etPhone);
 
         /* Adicionando FocusListener*/
@@ -171,6 +204,14 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         etPassword.setOnFocusChangeListener(this);
         etPasswordAgain.setOnFocusChangeListener(this);
         etPhone.setOnFocusChangeListener(this);
+        etIdentification.setOnFocusChangeListener(this);
+        etShippingAgent.setOnFocusChangeListener(this);
+        etCPF.setOnFocusChangeListener(this);
+        etNationality.setOnFocusChangeListener(this);
+        etProfession.setOnFocusChangeListener(this);
+        etStreet.setOnFocusChangeListener(this);
+        etNeighborhood.setOnFocusChangeListener(this);
+        etZipCode.setOnFocusChangeListener(this);
 
         /* Adicionando máscara */
         etPhone.addTextChangedListener(new TextWatcher() {
@@ -259,6 +300,28 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         rgGender = (RadioGroup) findViewById(R.id.rgGender);
         rbMale = (RadioButton) findViewById(R.id.rbMale);
         rbFemale = (RadioButton) findViewById(R.id.rbFemale);
+
+        rgIdentification = (RadioGroup) findViewById(R.id.rgIdentification);
+        rbRG = (RadioButton) findViewById(R.id.rbRG);
+        rbPassport= (RadioButton) findViewById(R.id.rbPassport);
+
+        /** Setei o valor do Hint do EditText de identificação aqui, pois eu não conseguia apagar
+         * setando diretamente no layout **/
+
+        etIdentification.setHint("RG");
+
+        /** Alterna entre os campos RG e Passporte ao selecionar uma opção do RadioGroup **/
+
+        rgIdentification.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId==R.id.rbPassport)
+                    etIdentification.setHint("Passaporte");
+                  else
+                    etIdentification.setHint("RG");
+            }
+        });
 
         /**** Seta o comportamento do DatePicker ****/
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MMM/yyyy", Locale.US);
@@ -605,6 +668,75 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             }
         }
 
+        /* Verifica se o campo de identificação foi preenchido
+         * e qual tipo de documento fornecido */
+        if (!hasValidIdentification()) {
+            tilIdentification.requestFocus();
+            isFocusRequested = true;
+        } else {
+            if (rbRG.isChecked()) {
+                formData.put("rg", etIdentification.getText().toString());
+            } else {
+                formData.put("passport", etIdentification.getText().toString());
+            }
+        }
+
+        /* Verifica se o campo Orgão Expedidor foi preenchido */
+        if (!hasValidShippingAgent()) {
+            tilShippingAgent.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("shipping_agent", etShippingAgent.getText().toString());
+        }
+
+        /* Verifica se o campo CPF foi preenchido */
+        if (!hasValidCPF()) {
+            tilCPF.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("cpf", etCPF.getText().toString());
+        }
+
+        /* Verifica se o campo Nacionalidade foi preenchido */
+        if (!hasValidNationality()) {
+            tilNationality.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("nationality", etNationality.getText().toString());
+        }
+
+        /* Verifica se o campo Profissão foi preenchido */
+        if (!hasValidProfession()) {
+            tilProfession.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("profession", etProfession.getText().toString());
+        }
+
+        /* Verifica se o campo Rua foi preenchido */
+        if (!hasValidStreet()) {
+            tilStreet.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("street", etStreet.getText().toString());
+        }
+
+        /* Verifica se o campo Bairro foi preenchido */
+        if (!hasValidNeighborhood()) {
+            tilNeighborhood.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("neighborhood", etNeighborhood.getText().toString());
+        }
+
+        /* Verifica se o campo CEP foi preenchido */
+        if (!hasValidZipCode()) {
+            tilZipCode.requestFocus();
+            isFocusRequested = true;
+        } else {
+            formData.put("zipcode", etZipCode.getText().toString());
+        }
+
         /* Verifica o campo de telefone*/
         if (!hasValidPhone()) {
             if (!isFocusRequested) {
@@ -739,6 +871,78 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
+    private boolean hasValidIdentification() {
+        if (TextUtils.isEmpty(etIdentification.getText().toString().trim())) {
+            tilIdentification.setError(getResources().getString(R.string.err_msg_empty_identification));
+            return false;
+        }
+        tilIdentification.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidShippingAgent() {
+        if (TextUtils.isEmpty(etShippingAgent.getText().toString().trim())) {
+            tilShippingAgent.setError(getResources().getString(R.string.err_msg_empty_shipping_agent));
+            return false;
+        }
+        tilShippingAgent.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidCPF() {
+        if (TextUtils.isEmpty(etCPF.getText().toString().trim())) {
+            tilCPF.setError(getResources().getString(R.string.err_msg_empty_cpf));
+            return false;
+        }
+        tilCPF.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidNationality() {
+        if (TextUtils.isEmpty(etNationality.getText().toString().trim())) {
+            tilNationality.setError(getResources().getString(R.string.err_msg_empty_nationality));
+            return false;
+        }
+        tilNationality.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidProfession() {
+        if (TextUtils.isEmpty(etProfession.getText().toString().trim())) {
+            tilProfession.setError(getResources().getString(R.string.err_msg_empty_profession));
+            return false;
+        }
+        tilProfession.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidStreet() {
+        if (TextUtils.isEmpty(etStreet.getText().toString().trim())) {
+            tilStreet.setError(getResources().getString(R.string.err_msg_empty_street));
+            return false;
+        }
+        tilStreet.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidNeighborhood() {
+        if (TextUtils.isEmpty(etNeighborhood.getText().toString().trim())) {
+            tilNeighborhood.setError(getResources().getString(R.string.err_msg_empty_neighborhood));
+            return false;
+        }
+        tilNeighborhood.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidZipCode() {
+        if (TextUtils.isEmpty(etZipCode.getText().toString().trim())) {
+            tilZipCode.setError(getResources().getString(R.string.err_msg_empty_zipcode));
+            return false;
+        }
+        tilZipCode.setErrorEnabled(false);
+        return true;
+    }
+
     private boolean hasValidState() {
         if (spState.getSelectedItemPosition() == 0) {
             (findViewById(R.id.tvSpStateErrMessage)).setVisibility(View.VISIBLE);
@@ -788,6 +992,39 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                 case R.id.etPasswordAgain:
                     hasValidRepeatedPassword();
                     break;
+
+                case R.id.etIdentification:
+                    hasValidIdentification();
+                    break;
+
+                case R.id.etShippingAgent:
+                    hasValidShippingAgent();
+                    break;
+
+                case R.id.etCpf:
+                    hasValidCPF();
+                    break;
+
+                case R.id.etNationality:
+                    hasValidNationality();
+                    break;
+
+                case R.id.etProfession:
+                    hasValidProfession();
+                    break;
+
+                case R.id.etStreet:
+                    hasValidStreet();
+                    break;
+
+                case R.id.etNeighborhood:
+                    hasValidNeighborhood();
+                    break;
+
+                case R.id.etZipCode:
+                    hasValidZipCode();
+                    break;
+
                 case R.id.etPhone:
                     hasValidPhone();
                     break;

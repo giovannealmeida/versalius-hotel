@@ -146,19 +146,45 @@
                     android:inputType="text|date" />
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/lb_identification"
+                android:textSize="20sp" />
+
+            <RadioGroup
+                android:id="@+id/rgIdentification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
+
+                <RadioButton
+                    android:id="@+id/rbRG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lb_RG"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/rbPassport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lb_passport" />
+            </RadioGroup>
+
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilRg"
+                android:id="@+id/tilIdentification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etRg"
+                    android:id="@+id/etIdentification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
-                    android:hint="@string/hint_rg"
-                    android:inputType="textCapWords" />
+                    android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -188,7 +214,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_cpf"
-                    android:inputType="textCapWords" />
+                    android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -387,7 +413,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_zip_code"
-                    android:inputType="textCapWords" />
+                    android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

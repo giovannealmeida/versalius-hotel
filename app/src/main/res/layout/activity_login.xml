@@ -92,7 +92,8 @@
                 android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:text="@string/dont_have_acc"
-                android:textSize="@dimen/small_link" />
+                android:textSize="@dimen/small_link"
+                android:textColor="@android:color/white"/>
 
             <Button
                 android:id="@+id/btSingup"

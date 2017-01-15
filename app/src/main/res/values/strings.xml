@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">CHECK HOTEL</string>
     <string name="action_login">ENTRAR</string>
     <string name="copyright">© Copyright 2016 VERSALIUS</string>
@@ -9,8 +10,10 @@
     <!--Titles-->
     <string name="title_signup">CADASTRO</string>
     <string name="title_dialog_permission">Permissão requerida</string>
+    <string name="title_crop_activity">Cortar Imagem</string>
 
     <!--Hints-->
+
     <string name="hint_service">Serviço</string>
     <string name="hint_city">Cidade</string>
     <string name="hint_city_required">Cidade *</string>
@@ -20,6 +23,7 @@
     <string name="hint_password_required">Senha *</string>
     <string name="hint_full_name">Nome Completo *</string>
     <string name="hint_rg">RG *</string>
+    <string name="hint_passport">Passaporte *</string>
     <string name="hint_shipping_agent">Orgão Expedidor *</string>
     <string name="hint_cpf">CPF *</string>
     <string name="hint_nationality">Nacionalidade *</string>
@@ -33,41 +37,60 @@
     <string name="hint_state">Estado *</string>
     <string name="hint_birth_date">Data de nascimento *</string>
     <string name="hint_phone">Telefone *</string>
+    <string name="hint_country_spinner">Selecione um país…</string>
+    <string name="hint_state_spinner">Selecione um estado…</string>
+    <string name="hint_city_spinner">Selecione uma cidade…</string>
 
     <!--Labels-->
+
     <string name="lb_radio_male">Masculino</string>
     <string name="lb_radio_female">Feminino</string>
     <string name="lb_gender">Sexo *</string>
     <string name="lb_facebook">facebook.com/</string>
     <string name="lb_twitter">twitter.com/</string>
     <string name="lb_site">http://</string>
+    <string name="lb_RG">RG</string>
+    <string name="lb_passport">Passaporte</string>
+    <string name="lb_identification">Documento de Identificação *</string>
 
     <!--Mensagens de erros-->
-    <string name="err_msg_service">Insira um serviço</string>
-    <string name="err_msg_city">Insira uma cidade</string>
+
     <string name="err_msg_empty_name">Insira o nome completo</string>
     <string name="err_msg_empty_email">Insira um e-mail válido</string>
+    <string name="err_msg_empty_identification">Insira o número do documento de identificação</string>
+    <string name="err_msg_empty_shipping_agent">Insira o órgão expedidor</string>
+    <string name="err_msg_empty_cpf">Insira o número do seu CPF</string>
+    <string name="err_msg_empty_nationality">Insira a sua nacionalidade</string>
+    <string name="err_msg_empty_profession">Insira a sua profissão</string>
+    <string name="err_msg_empty_street">Insira o nome da sua rua</string>
+    <string name="err_msg_empty_neighborhood">Insira o nome do seu bairro</string>
+    <string name="err_msg_empty_zipcode">Insira o seu código postal</string>
+
+    <string name="err_msg_invalid_identification">Número do documento de identificação inválido</string>
+    <string name="err_msg_invalid_cpf">Número do documento de identificação inválido</string>
     <string name="err_msg_invalid_email">Email inválido</string>
     <string name="err_msg_invalid_site">Site inválido</string>
     <string name="err_msg_invalid_facebook">Facebook inválido</string>
     <string name="err_msg_invalid_twitter">Twitter inválido</string>
-    <string name="err_msg_short_password">A senha deve possuir de 6 a 22 caracteres</string>
-    <string name="err_msg_dont_match_password">As senhas não são iguais</string>
     <string name="err_msg_invalid_birthday">Data de nascimento inválida</string>
-    <string name="err_msg_must_select_one">Selecione uma opção</string>
     <string name="err_msg_invalid_phone">Número inválido</string>
-    <string name="hint_country_spinner">Selecione um país…</string>
-    <string name="hint_state_spinner">Selecione um estado…</string>
-    <string name="hint_city_spinner">Selecione uma cidade…</string>
+
+    <string name="err_msg_must_select_one">Selecione uma opção</string>
     <string name="err_msg_must_select_city">Selecione uma cidade</string>
     <string name="err_msg_must_select_continent">Selecione um continente</string>
     <string name="err_msg_must_select_country">Selecione um país</string>
     <string name="err_msg_must_select_state">Selecione um estado</string>
+
     <string name="err_msg_existing_email">Este email já está em uso</string>
+    <string name="err_msg_city">Insira uma cidade</string>
+    <string name="err_msg_short_password">A senha deve possuir de 6 a 22 caracteres</string>
+    <string name="err_msg_dont_match_password">As senhas não são iguais</string>
     <string name="err_msg_server_fail">Houve uma falha. Tente novamente mais tarde.</string>
+
+    <!-- Mensagens Caixas de Diálogo -->
+
     <string name="dialog_permission_agree_button">Ok</string>
     <string name="dialog_permission_disagree_button">Cancelar</string>
-    <string name="title_crop_activity">Cortar Imagem</string>
 
     <!--Arrays-->
     <string-array name="array_continents">
