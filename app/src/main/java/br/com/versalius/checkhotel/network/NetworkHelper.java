@@ -27,7 +27,7 @@ public class NetworkHelper {
     private static Context context;
     private RequestQueue requestQueue;
 
-    private final String DOMINIO = "http://checkhotel.versalius.com.br/api/"; // Remoto
+    private final String DOMINIO = "http://checkhotel.versalius.com.br/api"; // Remoto
 //    private final String DOMINIO = "http://192.168.1.106/akijob/api"; // Repo
 
     private final String LOGIN = "/login";

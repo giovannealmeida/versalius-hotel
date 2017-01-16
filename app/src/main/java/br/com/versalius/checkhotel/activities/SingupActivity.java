@@ -324,7 +324,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         });
 
         /**** Seta o comportamento do DatePicker ****/
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MMM/yyyy", Locale.US);
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         Calendar nowCalendar = Calendar.getInstance();
         final DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
@@ -393,7 +393,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                 String[] continent_ids = getResources().getStringArray(R.array.array_continent_id);
                 /* Através da posição do estado selecionado no spinner, descobre-se o id dele */
                 int selectedContinetId = Integer.valueOf(continent_ids[spContinent.getSelectedItemPosition()]);
-                System.out.println(selectedContinetId);
                 countryIdList = new HashMap<>();
                 /* Se o valor do item selecionado é 0, o item selecionado é "Selecione um estado...". Logo, não há seleção válida*/
                 if (selectedContinetId == 0) {
@@ -618,6 +617,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private boolean isValidForm() {
 
         boolean isFocusRequested = false;
+        formData.put("birthday", etBirthday.getText().toString());
         /* Verifica se o campo Nome */
         if (!hasValidName()) {
             tilName.requestFocus();
