@@ -104,6 +104,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private Spinner spCountry;
     private Spinner spState;
 
+    private ImageView ivCpfCheck;
+
     private ArrayAdapter<String> spCountryArrayAdapter;
     private ArrayList<String> spCountryListData;
     private HashMap<String, String> countryIdList;
@@ -191,6 +193,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         etNeighborhood = (EditText) findViewById(R.id.etNeighborhood);
         etZipCode = (EditText) findViewById(R.id.etZipCode);
         etPhone = (EditText) findViewById(R.id.etPhone);
+
+        /* Instanciando ImageVIew */
+        ivCpfCheck = (ImageView) findViewById(R.id.ivCpfCheck);
 
         /* Adicionando FocusListener*/
         etName.setOnFocusChangeListener(this);
@@ -398,10 +403,22 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.rbPassport)
+                if (checkedId == R.id.rbPassport) {
+                    tilShippingAgent.setVisibility(View.GONE);
+                    etShippingAgent.setVisibility(View.GONE);
+                    tilCPF.setVisibility(View.GONE);
+                    etCPF.setVisibility(View.GONE);
+                    ivCpfCheck.setVisibility(View.GONE);
                     etIdentification.setHint("Passaporte");
-                else
+                } else {
+                    tilShippingAgent.setVisibility(View.VISIBLE);
+                    etShippingAgent.setVisibility(View.VISIBLE);
+                    tilCPF.setVisibility(View.VISIBLE);
+                    etCPF.setVisibility(View.VISIBLE);
+                    ivCpfCheck.setVisibility(View.VISIBLE);
                     etIdentification.setHint("RG");
+
+                }
             }
         });
 
@@ -765,27 +782,26 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         } else {
             if (rbRG.isChecked()) {
                 formData.put("rg", etIdentification.getText().toString());
+                /* Verifica se o campo Orgão Expedidor foi preenchido */
+                if (!hasValidShippingAgent()) {
+                    tilShippingAgent.requestFocus();
+                    isFocusRequested = true;
+                } else {
+                    formData.put("shipping_agent", etShippingAgent.getText().toString());
+                }
+
+        /* Verifica se o campo CPF foi preenchido */
+                if (!hasValidCpf()) {
+                    tilCPF.requestFocus();
+                    isFocusRequested = true;
+                } else {
+                    formData.put("cpf", etCPF.getText().toString());
+                }
+
             } else {
                 formData.put("passport", etIdentification.getText().toString());
             }
         }
-
-        /* Verifica se o campo Orgão Expedidor foi preenchido */
-        if (!hasValidShippingAgent()) {
-            tilShippingAgent.requestFocus();
-            isFocusRequested = true;
-        } else {
-            formData.put("shipping_agent", etShippingAgent.getText().toString());
-        }
-
-        /* Verifica se o campo CPF foi preenchido */
-        if (!hasValidCpf()) {
-            tilCPF.requestFocus();
-            isFocusRequested = true;
-        } else {
-            formData.put("cpf", etCPF.getText().toString());
-        }
-
 
         /* Verifica se o campo Rua foi preenchido */
         if (!hasValidStreet()) {
@@ -965,7 +981,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     }
 
 
-
     private boolean hasValidName() {
         if (TextUtils.isEmpty(etName.getText().toString().trim())) {
             tilName.setError(getResources().getString(R.string.err_msg_empty_name));
@@ -992,7 +1007,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         tilShippingAgent.setErrorEnabled(false);
         return true;
     }
-
 
 
     private boolean hasValidStreet() {
