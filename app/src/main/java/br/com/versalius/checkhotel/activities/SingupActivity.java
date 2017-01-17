@@ -779,7 +779,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         }
 
         /* Verifica se o campo CPF foi preenchido */
-        if (!hasValidCPF()) {
+        if (!hasValidCpf()) {
             tilCPF.requestFocus();
             isFocusRequested = true;
         } else {
@@ -920,6 +920,52 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
+    private boolean hasValidCpf() {
+        String cpf = etCPF.getText().toString().trim();
+        if (TextUtils.isEmpty(cpf)) {
+            tilCPF.setError(getResources().getString(R.string.err_msg_empty_cpf));
+            return false;
+        } /*else if (!android.util.Patterns..matcher(cpf).matches()) {
+            tilCPF.setError(getResources().getString(R.string.err_msg_invalid_cpf));
+            return false;
+        }*/
+
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbCpfCheck);
+        findViewById(R.id.ivCpfCheck).setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        NetworkHelper.getInstance(this).cpfExists(cpf, new ResponseCallback() {
+            @Override
+            public void onSuccess(String jsonStringResponse) {
+                findViewById(R.id.ivCpfCheck).setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                try {
+                    JSONObject json = new JSONObject(jsonStringResponse);
+                    if (json.getBoolean("status")) { /* O cpf existe */
+                        tilCPF.setError(getResources().getString(R.string.err_msg_existing_cpf));
+                        ((ImageView) findViewById(R.id.ivCpfCheck)).setImageDrawable(ContextCompat.getDrawable(SingupActivity.this, R.drawable.ic_close_circle));
+                        ((ImageView) findViewById(R.id.ivCpfCheck)).setColorFilter(Color.argb(255, 239, 83, 80));
+                    } else {
+                        ((ImageView) findViewById(R.id.ivCpfCheck)).setImageDrawable(ContextCompat.getDrawable(SingupActivity.this, R.drawable.ic_check));
+                        ((ImageView) findViewById(R.id.ivCpfCheck)).setColorFilter(Color.argb(255, 0, 192, 96));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(VolleyError error) {
+                tilCPF.setError(getResources().getString(R.string.err_msg_server_fail));
+                findViewById(R.id.ivCpfCheck).setVisibility(View.VISIBLE);
+            }
+        });
+
+        tilCPF.setErrorEnabled(false);
+        return true;
+    }
+
+    
+
     private boolean hasValidName() {
         if (TextUtils.isEmpty(etName.getText().toString().trim())) {
             tilName.setError(getResources().getString(R.string.err_msg_empty_name));
@@ -947,14 +993,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
-    private boolean hasValidCPF() {
-        if (TextUtils.isEmpty(etCPF.getText().toString().trim())) {
-            tilCPF.setError(getResources().getString(R.string.err_msg_empty_cpf));
-            return false;
-        }
-        tilCPF.setErrorEnabled(false);
-        return true;
-    }
 
 
     private boolean hasValidStreet() {
@@ -1025,7 +1063,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                     break;
 
                 case R.id.etCpf:
-                    hasValidCPF();
+                    hasValidCpf();
                     break;
 
                 case R.id.etStreet:

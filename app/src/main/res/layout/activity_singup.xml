@@ -21,11 +21,12 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
+
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="25dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivProfile"
@@ -35,16 +36,17 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:src="@drawable/ic_pic_placeholder"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="#FF000000" />
+                    app:civ_border_color="#FF000000"
+                    app:civ_border_width="2dp" />
+
                 <ImageButton
                     android:id="@+id/btGetImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_camera"
-                    android:padding="7dp"
+                    android:layout_gravity="bottom|end"
                     android:background="@drawable/circular_button"
-                    android:layout_gravity="bottom|end"/>
+                    android:padding="7dp"
+                    android:src="@drawable/ic_camera" />
             </FrameLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -70,9 +72,9 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tilEmail"
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/etEmail"
@@ -163,8 +165,8 @@
                     android:id="@+id/rbRG"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/lb_RG"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="@string/lb_RG" />
 
                 <RadioButton
                     android:id="@+id/rbPassport"
@@ -173,19 +175,43 @@
                     android:text="@string/lb_passport" />
             </RadioGroup>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilIdentification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etIdentification"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilIdentification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:inputType="number" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etIdentification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/pbRgCheck"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:focusable="false"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/ivRgCheck"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:focusable="false"
+                    android:src="@drawable/ic_check"
+                    android:tint="#ccc" />
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilShippingAgent"
@@ -202,21 +228,44 @@
                     android:inputType="textCapWords" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilCpf"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etCpf"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilCpf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:hint="@string/hint_cpf"
-                    android:inputType="textCapWords"
-                    android:maxLength="14"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etCpf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:hint="@string/hint_cpf"
+                        android:inputType="textCapWords"
+                        android:maxLength="14" />
+                </android.support.design.widget.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/pbCpfCheck"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:focusable="false"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/ivCpfCheck"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:focusable="false"
+                    android:src="@drawable/ic_check"
+                    android:tint="#ccc" />
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilNationality"
@@ -430,7 +479,7 @@
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_zip_code"
                     android:inputType="textCapWords"
-                    android:maxLength="9"/>
+                    android:maxLength="9" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
