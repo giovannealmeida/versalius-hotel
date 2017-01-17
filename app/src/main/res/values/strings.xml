@@ -26,9 +26,10 @@
     <string name="hint_passport">Passaporte *</string>
     <string name="hint_shipping_agent">Orgão Expedidor *</string>
     <string name="hint_cpf">CPF *</string>
-    <string name="hint_nationality">Nacionalidade *</string>
-    <string name="hint_profession">Profissão *</string>
+    <string name="hint_nationality">Nacionalidade</string>
+    <string name="hint_profession">Profissão</string>
     <string name="hint_street">Rua *</string>
+    <string name="hint_number">Número</string>
     <string name="hint_neighborhood">Bairro</string>
     <string name="hint_zip_code">CEP</string>
     <string name="hint_password_again">Repita a senha</string>
@@ -46,9 +47,6 @@
     <string name="lb_radio_male">Masculino</string>
     <string name="lb_radio_female">Feminino</string>
     <string name="lb_gender">Sexo *</string>
-    <string name="lb_facebook">facebook.com/</string>
-    <string name="lb_twitter">twitter.com/</string>
-    <string name="lb_site">http://</string>
     <string name="lb_RG">RG</string>
     <string name="lb_passport">Passaporte</string>
     <string name="lb_identification">Documento de Identificação *</string>

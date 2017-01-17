@@ -65,7 +65,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by jn18 on 13/01/2017.
  */
-public class SingupActivity extends AppCompatActivity implements View.OnFocusChangeListener{
+public class SingupActivity extends AppCompatActivity implements View.OnFocusChangeListener {
     private TextInputLayout tilName;
     private TextInputLayout tilEmail;
     private TextInputLayout tilPassword;
@@ -73,11 +73,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private TextInputLayout tilIdentification;
     private TextInputLayout tilShippingAgent;
     private TextInputLayout tilCPF;
-    private TextInputLayout tilNationality;
-    private TextInputLayout tilProfession;
     private TextInputLayout tilStreet;
-    private TextInputLayout tilNeighborhood;
-    private TextInputLayout tilZipCode;
     private TextInputLayout tilPhone;
 
     private EditText etName;
@@ -91,6 +87,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private EditText etNationality;
     private EditText etProfession;
     private EditText etStreet;
+    private EditText etNumber;
     private EditText etNeighborhood;
     private EditText etZipCode;
     private EditText etPhone;
@@ -152,16 +149,16 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
-                if(ContextCompat.checkSelfPermission(SingupActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                if (ContextCompat.checkSelfPermission(SingupActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) ==
                         PackageManager.PERMISSION_GRANTED) {
                     Intent i = new Intent(Intent.ACTION_PICK);
                     i.setType("image/*");
                     startActivityForResult(i, ACTION_RESULT_GET_IMAGE);
                 } else {
-                    if(ActivityCompat.shouldShowRequestPermissionRationale(SingupActivity.this,android.Manifest.permission.READ_EXTERNAL_STORAGE)){
-                        callDialog("O Check Hotel precisa de permissão para acessar os arquivos do dispositivo",new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE});
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(SingupActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        callDialog("O Check Hotel precisa de permissão para acessar os arquivos do dispositivo", new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE});
                     } else {
-                        ActivityCompat.requestPermissions(SingupActivity.this,new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_PERMISSION_CODE);
+                        ActivityCompat.requestPermissions(SingupActivity.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION_CODE);
                     }
                 }
             }
@@ -175,11 +172,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         tilIdentification = (TextInputLayout) findViewById(R.id.tilIdentification);
         tilShippingAgent = (TextInputLayout) findViewById(R.id.tilShippingAgent);
         tilCPF = (TextInputLayout) findViewById(R.id.tilCpf);
-        tilNationality = (TextInputLayout) findViewById(R.id.tilNationality);
-        tilProfession = (TextInputLayout) findViewById(R.id.tilProfession);
         tilStreet = (TextInputLayout) findViewById(R.id.tilStreet);
-        tilNeighborhood = (TextInputLayout) findViewById(R.id.tilNeighborhood);
-        tilZipCode = (TextInputLayout) findViewById(R.id.tilZipCode);
         tilPhone = (TextInputLayout) findViewById(R.id.tilPhone);
 
         /* Instanciando campos */
@@ -194,6 +187,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         etNationality = (EditText) findViewById(R.id.etNationality);
         etProfession = (EditText) findViewById(R.id.etProfession);
         etStreet = (EditText) findViewById(R.id.etStreet);
+        etNumber = (EditText) findViewById(R.id.etNumber);
         etNeighborhood = (EditText) findViewById(R.id.etNeighborhood);
         etZipCode = (EditText) findViewById(R.id.etZipCode);
         etPhone = (EditText) findViewById(R.id.etPhone);
@@ -210,10 +204,98 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         etNationality.setOnFocusChangeListener(this);
         etProfession.setOnFocusChangeListener(this);
         etStreet.setOnFocusChangeListener(this);
+        etNumber.setOnFocusChangeListener(this);
         etNeighborhood.setOnFocusChangeListener(this);
         etZipCode.setOnFocusChangeListener(this);
 
-        /* Adicionando máscara */
+        /* Adicionando máscara para o CPF*/
+        etCPF.addTextChangedListener(new TextWatcher() {
+            boolean isErasing = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                /* Se depois da mudança não serão acrescidos caracteres, está apagando */
+                isErasing = (after == 0);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String lastChar = "";
+                int digits = etCPF.getText().toString().length();
+                /* Se não está apagando, verifica se algo precisa ser adicionado */
+                if (!isErasing) {
+                    if (digits > 0) {
+                        lastChar = etCPF.getText().toString().substring(digits - 1);
+                    }
+                    switch (digits) {
+                        case 4:
+                            if (!lastChar.equals(".")) {
+                                String currentDigits = etCPF.getText().toString().substring(0, digits - 1);
+                                etCPF.setText("");
+                                etCPF.append(currentDigits + "." + lastChar);
+                                break;
+                            }
+
+                        case 8:
+                            if (!lastChar.equals(".")) {
+                                String currentDigits = etCPF.getText().toString().substring(0, digits - 1);
+                                etCPF.setText("");
+                                etCPF.append(currentDigits + "." + lastChar);
+                                break;
+                            }
+                        case 12:
+                            if (!lastChar.equals("-")) {
+                                String currentDigits = etCPF.getText().toString().substring(0, digits - 1);
+                                etCPF.setText("");
+                                etCPF.append(currentDigits + "-" + lastChar);
+                                break;
+                            }
+                    }
+                }
+            }
+        });
+
+        /* Adicionando máscara para o telefone*/
+        etZipCode.addTextChangedListener(new TextWatcher() {
+            boolean isErasing = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                /* Se depois da mudança não serão acrescidos caracteres, está apagando */
+                isErasing = (after == 0);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String lastChar = "";
+                int digits = etZipCode.getText().toString().length();
+                /* Se não está apagando, verifica se algo precisa ser adicionado */
+                if (!isErasing) {
+                    if (digits > 0) {
+                        lastChar = etZipCode.getText().toString().substring(digits - 1);
+                    }
+                    switch (digits) {
+                        case 6:
+                            if (!lastChar.equals("-")) {
+                                String currentDigits = etZipCode.getText().toString().substring(0, digits - 1);
+                                etZipCode.setText("");
+                                etZipCode.append(currentDigits + "-" + lastChar);
+                                break;
+                            }
+                    }
+                }
+            }
+        });
+
+        /* Adicionando máscara para o telefone*/
         etPhone.addTextChangedListener(new TextWatcher() {
             boolean isErasing = false;
 
@@ -303,7 +385,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
 
         rgIdentification = (RadioGroup) findViewById(R.id.rgIdentification);
         rbRG = (RadioButton) findViewById(R.id.rbRG);
-        rbPassport= (RadioButton) findViewById(R.id.rbPassport);
+        rbPassport = (RadioButton) findViewById(R.id.rbPassport);
 
         /** Setei o valor do Hint do EditText de identificação aqui, pois eu não conseguia apagar
          * setando diretamente no layout **/
@@ -312,13 +394,13 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
 
         /** Alterna entre os campos RG e Passporte ao selecionar uma opção do RadioGroup **/
 
-        rgIdentification.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+        rgIdentification.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId==R.id.rbPassport)
+                if (checkedId == R.id.rbPassport)
                     etIdentification.setHint("Passaporte");
-                  else
+                else
                     etIdentification.setHint("RG");
             }
         });
@@ -452,51 +534,52 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 /* Através da posição do estado selecionado no spinner, descobre-se o id dele */
-                try{
-                int selectedCountryId = Integer.valueOf(countryIdList.get(spCountry.getSelectedItem().toString()));
-                stateIdList = new HashMap<>();
+                try {
+                    int selectedCountryId = Integer.valueOf(countryIdList.get(spCountry.getSelectedItem().toString()));
+                    stateIdList = new HashMap<>();
                 /* Se o valor do item selecionado é 0, o item selecionado é "Selecione um estado...". Logo, não há seleção válida*/
-                if (selectedCountryId == 0) {
-                    spStateListData.clear();
-                    spStateListData.add(getResources().getString(R.string.hint_state_spinner));
-                    stateIdList.put(getResources().getString(R.string.hint_state_spinner), "0"); /* O id do primeiro item do spinner é nulo (ou seja, é zero)*/
-                    spState.setEnabled(false);
-                    spStateArrayAdapter.notifyDataSetChanged();
-                    return;
-                }
+                    if (selectedCountryId == 0) {
+                        spStateListData.clear();
+                        spStateListData.add(getResources().getString(R.string.hint_state_spinner));
+                        stateIdList.put(getResources().getString(R.string.hint_state_spinner), "0"); /* O id do primeiro item do spinner é nulo (ou seja, é zero)*/
+                        spState.setEnabled(false);
+                        spStateArrayAdapter.notifyDataSetChanged();
+                        return;
+                    }
 
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
-                progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
+                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
+                    progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
 
-                NetworkHelper.getInstance(SingupActivity.this).getStates(selectedCountryId, new ResponseCallback() {
-                    @Override
-                    public void onSuccess(String jsonStringResponse) {
-                        try {
-                            spStateListData.clear();
-                            spStateListData.add(getResources().getString(R.string.hint_state_spinner));
-                            stateIdList.put(getResources().getString(R.string.hint_state_spinner), "0"); /* O id do primeiro item do spinner é nulo (ou seja, é zero)*/
-                            JSONArray jArray = new JSONArray(jsonStringResponse);
-                            if (jArray != null) {
-                                for (int i = 0; i < jArray.length(); i++) {
-                                    spStateListData.add(jArray.getJSONObject(i).getString("name"));
-                                    stateIdList.put(jArray.getJSONObject(i).getString("name"), jArray.getJSONObject(i).getString("id"));
+                    NetworkHelper.getInstance(SingupActivity.this).getStates(selectedCountryId, new ResponseCallback() {
+                        @Override
+                        public void onSuccess(String jsonStringResponse) {
+                            try {
+                                spStateListData.clear();
+                                spStateListData.add(getResources().getString(R.string.hint_state_spinner));
+                                stateIdList.put(getResources().getString(R.string.hint_state_spinner), "0"); /* O id do primeiro item do spinner é nulo (ou seja, é zero)*/
+                                JSONArray jArray = new JSONArray(jsonStringResponse);
+                                if (jArray != null) {
+                                    for (int i = 0; i < jArray.length(); i++) {
+                                        spStateListData.add(jArray.getJSONObject(i).getString("name"));
+                                        stateIdList.put(jArray.getJSONObject(i).getString("name"), jArray.getJSONObject(i).getString("id"));
+                                    }
                                 }
+                                spState.setEnabled(true);
+                                spStateArrayAdapter.notifyDataSetChanged();
+                                progressHelper.dismiss();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            spState.setEnabled(true);
-                            spStateArrayAdapter.notifyDataSetChanged();
-                            progressHelper.dismiss();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
 
-                    @Override
-                    public void onFail(VolleyError error) {
-                        Log.i("RESPONSE-FAIL", error.getMessage());
-                        progressHelper.dismiss();
-                    }
-                });
-                }catch(Exception e){}
+                        @Override
+                        public void onFail(VolleyError error) {
+                            Log.i("RESPONSE-FAIL", error.getMessage());
+                            progressHelper.dismiss();
+                        }
+                    });
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -558,10 +641,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                             progressHelper.dismiss();
                         }
                     });
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
                 /* Através da posição do estado selecionado no spinner, descobre-se o id dele */
-
 
 
             }
@@ -586,7 +668,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                                 try {
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
-                                    if(jsonObject.getBoolean("status")){
+                                    if (jsonObject.getBoolean("status")) {
                                         CustomSnackBar.make(coordinatorLayout, "Cadastro realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
                                         finish();
                                     } else {
@@ -616,8 +698,15 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
      */
     private boolean isValidForm() {
 
-        boolean isFocusRequested = false;
         formData.put("birthday", etBirthday.getText().toString());
+        formData.put("number", etNumber.getText().toString());
+        formData.put("neighborhood", etNeighborhood.getText().toString());
+        formData.put("zipcode", etZipCode.getText().toString());
+        formData.put("nationality", etNationality.getText().toString());
+        formData.put("profession", etProfession.getText().toString());
+
+        boolean isFocusRequested = false;
+
         /* Verifica se o campo Nome */
         if (!hasValidName()) {
             tilName.requestFocus();
@@ -697,21 +786,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             formData.put("cpf", etCPF.getText().toString());
         }
 
-        /* Verifica se o campo Nacionalidade foi preenchido */
-        if (!hasValidNationality()) {
-            tilNationality.requestFocus();
-            isFocusRequested = true;
-        } else {
-            formData.put("nationality", etNationality.getText().toString());
-        }
-
-        /* Verifica se o campo Profissão foi preenchido */
-        if (!hasValidProfession()) {
-            tilProfession.requestFocus();
-            isFocusRequested = true;
-        } else {
-            formData.put("profession", etProfession.getText().toString());
-        }
 
         /* Verifica se o campo Rua foi preenchido */
         if (!hasValidStreet()) {
@@ -719,22 +793,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             isFocusRequested = true;
         } else {
             formData.put("street", etStreet.getText().toString());
-        }
-
-        /* Verifica se o campo Bairro foi preenchido */
-        if (!hasValidNeighborhood()) {
-            tilNeighborhood.requestFocus();
-            isFocusRequested = true;
-        } else {
-            formData.put("neighborhood", etNeighborhood.getText().toString());
-        }
-
-        /* Verifica se o campo CEP foi preenchido */
-        if (!hasValidZipCode()) {
-            tilZipCode.requestFocus();
-            isFocusRequested = true;
-        } else {
-            formData.put("zipcode", etZipCode.getText().toString());
         }
 
         /* Verifica o campo de telefone*/
@@ -838,13 +896,13 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                 progressBar.setVisibility(View.GONE);
                 try {
                     JSONObject json = new JSONObject(jsonStringResponse);
-                    if(json.getBoolean("status")){ /* O email existe */
+                    if (json.getBoolean("status")) { /* O email existe */
                         tilEmail.setError(getResources().getString(R.string.err_msg_existing_email));
-                        ((ImageView)findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(SingupActivity.this, R.drawable.ic_close_circle));
-                        ((ImageView)findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 239,83,80));
+                        ((ImageView) findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(SingupActivity.this, R.drawable.ic_close_circle));
+                        ((ImageView) findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 239, 83, 80));
                     } else {
-                        ((ImageView)findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(SingupActivity.this, R.drawable.ic_check));
-                        ((ImageView)findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 0,192,96));
+                        ((ImageView) findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(SingupActivity.this, R.drawable.ic_check));
+                        ((ImageView) findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 0, 192, 96));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -898,23 +956,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
-    private boolean hasValidNationality() {
-        if (TextUtils.isEmpty(etNationality.getText().toString().trim())) {
-            tilNationality.setError(getResources().getString(R.string.err_msg_empty_nationality));
-            return false;
-        }
-        tilNationality.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean hasValidProfession() {
-        if (TextUtils.isEmpty(etProfession.getText().toString().trim())) {
-            tilProfession.setError(getResources().getString(R.string.err_msg_empty_profession));
-            return false;
-        }
-        tilProfession.setErrorEnabled(false);
-        return true;
-    }
 
     private boolean hasValidStreet() {
         if (TextUtils.isEmpty(etStreet.getText().toString().trim())) {
@@ -922,24 +963,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             return false;
         }
         tilStreet.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean hasValidNeighborhood() {
-        if (TextUtils.isEmpty(etNeighborhood.getText().toString().trim())) {
-            tilNeighborhood.setError(getResources().getString(R.string.err_msg_empty_neighborhood));
-            return false;
-        }
-        tilNeighborhood.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean hasValidZipCode() {
-        if (TextUtils.isEmpty(etZipCode.getText().toString().trim())) {
-            tilZipCode.setError(getResources().getString(R.string.err_msg_empty_zipcode));
-            return false;
-        }
-        tilZipCode.setErrorEnabled(false);
         return true;
     }
 
@@ -1005,24 +1028,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                     hasValidCPF();
                     break;
 
-                case R.id.etNationality:
-                    hasValidNationality();
-                    break;
-
-                case R.id.etProfession:
-                    hasValidProfession();
-                    break;
-
                 case R.id.etStreet:
                     hasValidStreet();
-                    break;
-
-                case R.id.etNeighborhood:
-                    hasValidNeighborhood();
-                    break;
-
-                case R.id.etZipCode:
-                    hasValidZipCode();
                     break;
 
                 case R.id.etPhone:
@@ -1034,11 +1041,11 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == ACTION_RESULT_GET_IMAGE && resultCode == RESULT_OK){
+        if (requestCode == ACTION_RESULT_GET_IMAGE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
             //Com base na URI da imagem selecionada, prepara o acesso ao banco de dados interno pra pegar a imagem
             String[] columns = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImage,columns,null,null,null);
+            Cursor cursor = getContentResolver().query(selectedImage, columns, null, null, null);
             cursor.moveToFirst();
 
             int columnIndex = cursor.getColumnIndex(columns[0]);
@@ -1046,11 +1053,11 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             cursor.close();
 
             //Passa o caminho da imagem pra activity que vai fazer o crop
-            startActivity(new Intent(this,CropActivity.class).putExtra("imagePath",imagePath));
+            startActivity(new Intent(this, CropActivity.class).putExtra("imagePath", imagePath));
         }
     }
 
-    private void callDialog( String message, final String[] permissions ){
+    private void callDialog(String message, final String[] permissions) {
         mMaterialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.title_dialog_permission)
                 .content(message)
