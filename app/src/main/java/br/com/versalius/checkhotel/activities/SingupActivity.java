@@ -964,7 +964,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
-    
+
 
     private boolean hasValidName() {
         if (TextUtils.isEmpty(etName.getText().toString().trim())) {
