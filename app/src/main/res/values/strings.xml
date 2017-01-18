@@ -66,6 +66,10 @@
 
     <string name="err_msg_invalid_identification">Número do documento de identificação inválido</string>
     <string name="err_msg_invalid_cpf">Número do documento de identificação inválido</string>
+    <string name="err_msg_invalid_name">Preencha seu nome corretamente</string>
+    <string name="err_msg_invalid_profession">Preencha sua profissão corretamente</string>
+    <string name="err_msg_invalid_nationality">Preencha sua nacionalidade corretamente</string>
+    <string name="err_msg_invalid_shipping_agent">Orgão expedidor inválido</string>
     <string name="err_msg_invalid_email">Email inválido</string>
     <string name="err_msg_invalid_site">Site inválido</string>
     <string name="err_msg_invalid_facebook">Facebook inválido</string>

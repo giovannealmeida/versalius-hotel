@@ -37,6 +37,8 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -52,8 +54,11 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
 import br.com.versalius.checkhotel.network.NetworkHelper;
@@ -66,6 +71,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by jn18 on 13/01/2017.
  */
 public class SingupActivity extends AppCompatActivity implements View.OnFocusChangeListener {
+
     private TextInputLayout tilName;
     private TextInputLayout tilEmail;
     private TextInputLayout tilPassword;
@@ -75,6 +81,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private TextInputLayout tilCPF;
     private TextInputLayout tilStreet;
     private TextInputLayout tilPhone;
+    private TextInputLayout tilProfession;
+    private TextInputLayout tilNationality;
 
     private EditText etName;
     private EditText etEmail;
@@ -128,6 +136,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     private static final int ACTION_RESULT_GET_IMAGE = 1000;
     private static final int REQUEST_PERMISSION_CODE = 1001;
 
+    private Pattern pat;
+    private Matcher mat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,6 +187,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         tilCPF = (TextInputLayout) findViewById(R.id.tilCpf);
         tilStreet = (TextInputLayout) findViewById(R.id.tilStreet);
         tilPhone = (TextInputLayout) findViewById(R.id.tilPhone);
+        tilProfession = (TextInputLayout) findViewById(R.id.tilProfession);
+        tilNationality = (TextInputLayout) findViewById(R.id.tilNationality);
 
         /* Instanciando campos */
         etName = (EditText) findViewById(R.id.etName);
@@ -264,7 +277,34 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             }
         });
 
-        /* Adicionando máscara para o telefone*/
+        /* Limpa o campo CEP para valores inválidos e incompletos */
+        etZipCode.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    hasValidZipCode();
+                }
+            }
+        });
+
+        /* Verifica se o campo foi preenchid corretamente */
+        etProfession.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    hasValidProfession();
+                }
+            }
+        });
+
+        /* Verifica se o campo foi preenchid corretamente */
+        etNationality.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    hasValidNationality();
+                }
+            }
+        });
+
+        /* Adicionando máscara para o CEP*/
         etZipCode.addTextChangedListener(new TextWatcher() {
             boolean isErasing = false;
 
@@ -434,6 +474,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             }
 
         }, nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH));
+
+        nowCalendar.set(nowCalendar.get(Calendar.YEAR)-18,11,31);
+        datePickerDialog.getDatePicker().setMaxDate(nowCalendar.getTimeInMillis());
 
         etBirthday.setInputType(InputType.TYPE_NULL);
         etBirthday.setText(dateFormatter.format(nowCalendar.getTime()));
@@ -676,9 +719,10 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
             @Override
             public void onClick(View view) {
                 final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
-                progressHelper.createProgressSpinner("Aguarde", "Realizando cadastro", true, false);
+
                 if (NetworkHelper.isOnline(SingupActivity.this)) {
                     if (isValidForm()) {
+                        progressHelper.createProgressSpinner("Aguarde", "Realizando cadastro.", true, false);
                         NetworkHelper.getInstance(SingupActivity.this).doSignUp(formData, new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
@@ -702,7 +746,9 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                                 CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                             }
                         });
-                    }
+                    } else
+                        CustomSnackBar.make(coordinatorLayout, "Atenção! Preencha o formulário corretamente.", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.INFO).show();
+
                 } else {
                     CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                 }
@@ -938,13 +984,18 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
 
     private boolean hasValidCpf() {
         String cpf = etCPF.getText().toString().trim();
+        pat = Pattern.compile("^[0-9]{3}[\\.][0-9]{3}[\\.][0-9]{3}[\\-][0-9]{2}$");
+        mat = pat.matcher(cpf);
         if (TextUtils.isEmpty(cpf)) {
             tilCPF.setError(getResources().getString(R.string.err_msg_empty_cpf));
             return false;
-        } /*else if (!android.util.Patterns..matcher(cpf).matches()) {
+        }else if (!mat.find()) {
             tilCPF.setError(getResources().getString(R.string.err_msg_invalid_cpf));
             return false;
-        }*/
+        }else if (cpf.length() < 11){
+            tilCPF.setError(getResources().getString(R.string.err_msg_invalid_cpf));
+            return false;
+        }
 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbCpfCheck);
         findViewById(R.id.ivCpfCheck).setVisibility(View.GONE);
@@ -980,10 +1031,15 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
-
     private boolean hasValidName() {
-        if (TextUtils.isEmpty(etName.getText().toString().trim())) {
+        String name = etName.getText().toString().trim();
+        pat = Pattern.compile("^[^\\d]+$");
+        mat = pat.matcher(name);
+        if (TextUtils.isEmpty(name)) {
             tilName.setError(getResources().getString(R.string.err_msg_empty_name));
+            return false;
+        }else if (!mat.find()) {
+            tilName.setError(getResources().getString(R.string.err_msg_invalid_name));
             return false;
         }
         tilName.setErrorEnabled(false);
@@ -1000,14 +1056,20 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     }
 
     private boolean hasValidShippingAgent() {
-        if (TextUtils.isEmpty(etShippingAgent.getText().toString().trim())) {
+        String sa = etShippingAgent.getText().toString().trim();
+        pat = Pattern.compile("^[^\\d]+$");
+        mat = pat.matcher(sa);
+        if (TextUtils.isEmpty(sa)) {
             tilShippingAgent.setError(getResources().getString(R.string.err_msg_empty_shipping_agent));
             return false;
+        }else if (!mat.find()) {
+            tilShippingAgent.setError(getResources().getString(R.string.err_msg_invalid_shipping_agent));
+            return false;
         }
+
         tilShippingAgent.setErrorEnabled(false);
         return true;
     }
-
 
     private boolean hasValidStreet() {
         if (TextUtils.isEmpty(etStreet.getText().toString().trim())) {
@@ -1034,6 +1096,36 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         }
         (findViewById(R.id.tvSpCityErrMessage)).setVisibility(View.GONE);
         return true;
+    }
+
+    private void hasValidZipCode (){
+
+        String zipcode = etZipCode.getText().toString().trim();
+        pat = Pattern.compile("^[0-9]{5}[\\-][0-9]{3}$");
+        mat = pat.matcher(zipcode);
+        if (!mat.find() || zipcode.length() < 8)
+            etZipCode.setText("");
+    }
+
+    private void hasValidProfession() {
+        String profession = etProfession.getText().toString().trim();
+        pat = Pattern.compile("^[^\\d]*$");
+        mat = pat.matcher(profession);
+        if (!mat.find())
+            tilProfession.setError(getResources().getString(R.string.err_msg_invalid_profession));
+        else
+            tilProfession.setErrorEnabled(false);
+    }
+
+    private void hasValidNationality() {
+
+        String nationality = etNationality.getText().toString().trim();
+        pat = Pattern.compile("^[^\\d]*$");
+        mat = pat.matcher(nationality);
+        if (!mat.find())
+            tilNationality.setError(getResources().getString(R.string.err_msg_invalid_nationality));
+        else
+            tilNationality.setErrorEnabled(false);
     }
 
     /**

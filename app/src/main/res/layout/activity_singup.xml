@@ -280,7 +280,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_nationality"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -295,7 +295,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_profession"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords"/>
             </android.support.design.widget.TextInputLayout>
 
             <TextView
