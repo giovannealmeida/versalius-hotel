@@ -85,7 +85,6 @@
 
     <string name="err_msg_existing_email">Este email já está em uso</string>
     <string name="err_msg_existing_cpf">Este CPF já está em uso</string>
-    <string name="err_msg_existing_rg">Este RG já está em uso</string>
     <string name="err_msg_city">Insira uma cidade</string>
     <string name="err_msg_short_password">A senha deve possuir de 6 a 22 caracteres</string>
     <string name="err_msg_dont_match_password">As senhas não são iguais</string>

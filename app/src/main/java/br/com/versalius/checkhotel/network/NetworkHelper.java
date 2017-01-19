@@ -34,7 +34,6 @@ public class NetworkHelper {
     private final String SIGNUP = "/login_controller/register";
     private final String CHECK_EMAIL = "/user_controller/email_check";
     private final String CHECK_CPF = "/user_controller/cpf_check";
-    private final String CHECK_RG = "/user_controller/rg_check";
     private final String SEND_SURVEY = "/survey";
     private final String COUNTRY = "/countries_controller";
     private final String STATE = "/states_controller";
@@ -144,17 +143,6 @@ public class NetworkHelper {
                 null,
                 TAG,
                 buildGetURL(DOMINIO + CHECK_CPF, params),
-                callback);
-    }
-
-    public void rgExists(String rg, ResponseCallback callback) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("rg", rg);
-
-        execute(Request.Method.GET,
-                null,
-                TAG,
-                buildGetURL(DOMINIO + CHECK_RG, params),
                 callback);
     }
 

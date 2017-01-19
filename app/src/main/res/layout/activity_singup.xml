@@ -176,43 +176,21 @@
             </RadioGroup>
 
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilIdentification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_weight="1">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/tilIdentification"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etIdentification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/etIdentification"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginTop="4dp"
-                        android:inputType="number"
-                        />
-                </android.support.design.widget.TextInputLayout>
-
-                <ProgressBar
-                    android:id="@+id/pbRgCheck"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:focusable="false"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/ivRgCheck"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:focusable="false"
-                    android:src="@drawable/ic_check"
-                    android:tint="#ccc" />
-            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilShippingAgent"
@@ -280,7 +258,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_nationality"
-                    android:inputType="textCapWords"/>
+                    android:inputType="textCapWords" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -295,7 +273,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_profession"
-                    android:inputType="textCapWords"/>
+                    android:inputType="textCapWords" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
