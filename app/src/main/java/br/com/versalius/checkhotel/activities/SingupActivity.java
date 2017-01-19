@@ -278,27 +278,27 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         });
 
         /* Limpa o campo CEP para valores inválidos e incompletos */
-        etZipCode.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+        etZipCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hasValidZipCode();
                 }
             }
         });
 
         /* Verifica se o campo foi preenchid corretamente */
-        etProfession.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+        etProfession.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hasValidProfession();
                 }
             }
         });
 
         /* Verifica se o campo foi preenchid corretamente */
-        etNationality.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+        etNationality.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
+                if (!hasFocus) {
                     hasValidNationality();
                 }
             }
@@ -475,7 +475,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
 
         }, nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH));
 
-        nowCalendar.set(nowCalendar.get(Calendar.YEAR)-18,11,31);
+        nowCalendar.set(nowCalendar.get(Calendar.YEAR) - 18, 11, 31);
         datePickerDialog.getDatePicker().setMaxDate(nowCalendar.getTimeInMillis());
 
         etBirthday.setInputType(InputType.TYPE_NULL);
@@ -989,10 +989,10 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         if (TextUtils.isEmpty(cpf)) {
             tilCPF.setError(getResources().getString(R.string.err_msg_empty_cpf));
             return false;
-        }else if (!mat.find()) {
+        } else if (!mat.find()) {
             tilCPF.setError(getResources().getString(R.string.err_msg_invalid_cpf));
             return false;
-        }else if (cpf.length() < 11){
+        } else if (!isCPF(cpf)) {
             tilCPF.setError(getResources().getString(R.string.err_msg_invalid_cpf));
             return false;
         }
@@ -1038,7 +1038,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         if (TextUtils.isEmpty(name)) {
             tilName.setError(getResources().getString(R.string.err_msg_empty_name));
             return false;
-        }else if (!mat.find()) {
+        } else if (!mat.find()) {
             tilName.setError(getResources().getString(R.string.err_msg_invalid_name));
             return false;
         }
@@ -1062,7 +1062,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         if (TextUtils.isEmpty(sa)) {
             tilShippingAgent.setError(getResources().getString(R.string.err_msg_empty_shipping_agent));
             return false;
-        }else if (!mat.find()) {
+        } else if (!mat.find()) {
             tilShippingAgent.setError(getResources().getString(R.string.err_msg_invalid_shipping_agent));
             return false;
         }
@@ -1098,7 +1098,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         return true;
     }
 
-    private void hasValidZipCode (){
+    private void hasValidZipCode() {
 
         String zipcode = etZipCode.getText().toString().trim();
         pat = Pattern.compile("^[0-9]{5}[\\-][0-9]{3}$");
@@ -1240,5 +1240,62 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    public static boolean isCPF(String CPF) {
+        CPF = CPF.replaceAll("\\D", "");
+
+        // considera-se erro CPF's formados por uma sequencia de numeros iguais
+        if (CPF.equals("00000000000") || CPF.equals("11111111111") ||
+                CPF.equals("22222222222") || CPF.equals("33333333333") ||
+                CPF.equals("44444444444") || CPF.equals("55555555555") ||
+                CPF.equals("66666666666") || CPF.equals("77777777777") ||
+                CPF.equals("88888888888") || CPF.equals("99999999999") ||
+                (CPF.length() != 11))
+            return (false);
+
+        char dig10, dig11;
+        int sm, i, r, num, peso;
+
+        // "try" - protege o codigo para eventuais erros de conversao de tipo (int)
+        try {
+            // Calculo do 1o. Digito Verificador
+            sm = 0;
+            peso = 10;
+            for (i = 0; i < 9; i++) {
+                // converte o i-esimo caractere do CPF em um numero:
+                // por exemplo, transforma o caractere '0' no inteiro 0
+                // (48 eh a posicao de '0' na tabela ASCII)
+                num = (int) (CPF.charAt(i) - 48);
+                sm = sm + (num * peso);
+                peso = peso - 1;
+            }
+
+            r = 11 - (sm % 11);
+            if ((r == 10) || (r == 11))
+                dig10 = '0';
+            else dig10 = (char) (r + 48); // converte no respectivo caractere numerico
+
+            // Calculo do 2o. Digito Verificador
+            sm = 0;
+            peso = 11;
+            for (i = 0; i < 10; i++) {
+                num = (int) (CPF.charAt(i) - 48);
+                sm = sm + (num * peso);
+                peso = peso - 1;
+            }
+
+            r = 11 - (sm % 11);
+            if ((r == 10) || (r == 11))
+                dig11 = '0';
+            else dig11 = (char) (r + 48);
+
+            // Verifica se os digitos calculados conferem com os digitos informados.
+            if ((dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10)))
+                return (true);
+            else return (false);
+        } catch (Exception erro) {
+            return (false);
+        }
     }
 }

@@ -248,7 +248,7 @@
                         android:layout_marginBottom="4dp"
                         android:layout_marginTop="4dp"
                         android:hint="@string/hint_cpf"
-                        android:inputType="textCapWords"
+                        android:inputType="phone"
                         android:maxLength="14" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -479,7 +479,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_zip_code"
-                    android:inputType="textCapWords"
+                    android:inputType="phone"
                     android:maxLength="9" />
             </android.support.design.widget.TextInputLayout>
 
