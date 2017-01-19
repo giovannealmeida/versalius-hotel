@@ -26,6 +26,7 @@
         <item name="colorControlHighlight">@color/colorAccent</item>
 
     </style>
+
     <style name="AppTheme.NoActionBar" parent="AppTheme.Dark">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
