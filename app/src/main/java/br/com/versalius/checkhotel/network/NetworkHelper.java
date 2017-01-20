@@ -30,7 +30,7 @@ public class NetworkHelper {
     private final String DOMINIO = "http://checkhotel.versalius.com.br/api"; // Remoto
 //    private final String DOMINIO = "http://192.168.1.106/akijob/api"; // Repo
 
-    private final String LOGIN = "/login";
+    private final String LOGIN = "/login_controller";
     private final String SIGNUP = "/login_controller/register";
     private final String FORGOT_PASSWORD = "/login_controller/forgot_password_send_hash";
     private final String CHECK_EMAIL = "/user_controller/email_check";
@@ -111,11 +111,18 @@ public class NetworkHelper {
     }
 
     public void forgotPassword(HashMap<String, String> params, ResponseCallback callback) {
-        Log.v("Email", String.valueOf(params));
         execute(Request.Method.POST,
                 params,
                 TAG,
                 DOMINIO + FORGOT_PASSWORD,
+                callback);
+    }
+
+    public void login(HashMap<String, String> params, ResponseCallback callback) {
+        execute(Request.Method.POST,
+                params,
+                TAG,
+                DOMINIO + LOGIN,
                 callback);
     }
 
