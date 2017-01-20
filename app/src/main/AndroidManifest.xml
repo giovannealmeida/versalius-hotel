@@ -27,7 +27,9 @@
         <activity
             android:name=".activities.Home"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

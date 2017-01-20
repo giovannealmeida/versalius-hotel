@@ -16,10 +16,18 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Button singup = (Button) findViewById(R.id.btSingup);
+        Button forgot = (Button) findViewById(R.id.btForgot);
         singup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this,SingupActivity.class));
+            }
+        });
+
+        forgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,ForgotPasswordActivity.class));
             }
         });
     }

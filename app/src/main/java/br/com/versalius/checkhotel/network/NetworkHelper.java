@@ -32,6 +32,7 @@ public class NetworkHelper {
 
     private final String LOGIN = "/login";
     private final String SIGNUP = "/login_controller/register";
+    private final String FORGOT_PASSWORD = "/login_controller/forgot_password_send_hash";
     private final String CHECK_EMAIL = "/user_controller/email_check";
     private final String CHECK_CPF = "/user_controller/cpf_check";
     private final String SEND_SURVEY = "/survey";
@@ -106,6 +107,15 @@ public class NetworkHelper {
                 params,
                 TAG,
                 DOMINIO + SIGNUP,
+                callback);
+    }
+
+    public void forgotPassword(HashMap<String, String> params, ResponseCallback callback) {
+        Log.v("Email", String.valueOf(params));
+        execute(Request.Method.POST,
+                params,
+                TAG,
+                DOMINIO + FORGOT_PASSWORD,
                 callback);
     }
 
