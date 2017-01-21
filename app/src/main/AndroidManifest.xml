@@ -27,7 +27,20 @@
         <activity
             android:name=".activities.Home"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".activities.CheckInActivity" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="br.com.versalius.checkhotel.activities.Home" />
+        </activity>
+
+        <activity android:name=".activities.CheckOutActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.versalius.checkhotel.activities.Home" />
+        </activity>
+
     </application>
 
 </manifest>

@@ -1,8 +1,11 @@
 package br.com.versalius.checkhotel.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import br.com.versalius.checkhotel.R;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ImageButton btCheckin;
+    private ImageButton btCheckout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +33,7 @@ public class Home extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,7 +41,7 @@ public class Home extends AppCompatActivity
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        }); */
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,6 +51,24 @@ public class Home extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        /* Manipula os fragmentos no Navigation Drawer */
+
+        btCheckin = (ImageButton) findViewById(R.id.btCheckin);
+        btCheckin.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View view) {
+                startActivity(new Intent(Home.this, CheckInActivity.class));
+            }
+        });
+
+        btCheckout = (ImageButton) findViewById(R.id.btCheckout);
+        btCheckout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View view) {
+                startActivity(new Intent(Home.this, CheckOutActivity.class));
+            }
+        });
     }
 
     @Override
@@ -54,13 +81,16 @@ public class Home extends AppCompatActivity
         }
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
+    */
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -75,6 +105,7 @@ public class Home extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -82,7 +113,7 @@ public class Home extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        /* if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
@@ -93,6 +124,12 @@ public class Home extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+
+        } */
+
+        if (id == R.id.nav_delete_acc) {
+
+        } else if (id == R.id.nav_delete_acc) {
 
         }
 

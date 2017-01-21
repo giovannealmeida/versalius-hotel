@@ -11,4 +11,6 @@
     <color name="snackBackgroundError">#992222</color>
     <color name="snackBackgroundSuccess">#48AA48</color>
     <color name="snackBackgroundInfo">#555</color>
+
+    <color name="transparent">#00000000</color>
 </resources>
