@@ -26,16 +26,24 @@ public class SessionHelper {
     }
 
     public static boolean isLogged() {
-        //Se houver algum CPF salvo, então exsite um operador logado
-        return !Preferences.getInstance(context).load(Preferences.USER_CPF).isEmpty();
+        //Se houver algum id salvo, então exsite um operador logado
+        return !Preferences.getInstance(context).load(Preferences.USER_ID).isEmpty();
     }
 
     public static void logout() {
         Preferences.getInstance(context).clearAll();
     }
 
-    public static String getUserFirstName() {
-        return Preferences.getInstance(context).load(Preferences.USER_FIRST_NAME);
+    public static String getUserName() {
+        return Preferences.getInstance(context).load(Preferences.USER_NAME);
+    }
+
+    public static String getUserEmail() {
+        return Preferences.getInstance(context).load(Preferences.USER_EMAIL);
+    }
+
+    public static String getAvatar() {
+        return Preferences.getInstance(context).load(Preferences.USER_AVATAR);
     }
 
     public static long getUserId() {
@@ -45,13 +53,15 @@ public class SessionHelper {
     public static void saveUser(User user) {
         try {
             Preferences.getInstance(context).save(
-                    Preferences.USER_CPF, user.getCpf());
+                    Preferences.USER_NAME, user.getName());
             Preferences.getInstance(context).save(
-                    Preferences.USER_PASSWORD, user.getPassword());
+                    Preferences.USER_EMAIL, user.getEmail());
             Preferences.getInstance(context).save(
-                    Preferences.USER_FIRST_NAME, user.getFirst_name());
+                    Preferences.USER_AVATAR, user.getAvatar());
             Preferences.getInstance(context).save(
                     Preferences.USER_ID, user.getId());
+            Preferences.getInstance(context).save(
+                    Preferences.USER_KEY, user.getKey());
         } catch (Exception e) {
             e.printStackTrace();
         }

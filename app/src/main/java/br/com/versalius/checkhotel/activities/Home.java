@@ -1,11 +1,15 @@
 package br.com.versalius.checkhotel.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,21 +21,38 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import br.com.versalius.checkhotel.R;
+import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private String DOMINIO = "http://checkhotel.versalius.com.br/";
     private ImageButton btCheckin;
     private ImageButton btCheckout;
+    private TextView tvName;
+    private TextView tvEmail;
+    private ImageView ivAvatar;
+    SessionHelper sessionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        sessionHelper = new SessionHelper(Home.this);
+        if (!sessionHelper.isLogged()) {
+            startActivity(new Intent(Home.this, LoginActivity.class));
+        } else {
+            setContentView(R.layout.activity_home);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -43,32 +64,50 @@ public class Home extends AppCompatActivity
             }
         }); */
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+
+        /* Manipula os itens do Navigation Drawer */
+            View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_home);
+            tvName = (TextView) headerLayout.findViewById(R.id.tvName);
+            tvEmail = (TextView) headerLayout.findViewById(R.id.tvEmail);
+            tvName.setText(sessionHelper.getUserName());
+            tvEmail.setText(sessionHelper.getUserEmail());
+
+
+
+            try {
+                ivAvatar = (ImageView) headerLayout.findViewById(R.id.ivAvatar);
+                new DownloadImageTask(ivAvatar).execute(DOMINIO + sessionHelper.getAvatar());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
         /* Manipula os fragmentos no Navigation Drawer */
 
-        btCheckin = (ImageButton) findViewById(R.id.btCheckin);
-        btCheckin.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View view) {
-                startActivity(new Intent(Home.this, CheckInActivity.class));
-            }
-        });
+            btCheckin = (ImageButton) findViewById(R.id.btCheckin);
+            btCheckin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(Home.this, CheckInActivity.class));
+                }
+            });
 
-        btCheckout = (ImageButton) findViewById(R.id.btCheckout);
-        btCheckout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View view) {
-                startActivity(new Intent(Home.this, CheckOutActivity.class));
-            }
-        });
+            btCheckout = (ImageButton) findViewById(R.id.btCheckout);
+            btCheckout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(Home.this, CheckOutActivity.class));
+                }
+            });
+        }
     }
 
     @Override
@@ -112,29 +151,45 @@ public class Home extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        /* if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        } */
-
-        if (id == R.id.nav_delete_acc) {
-
-        } else if (id == R.id.nav_delete_acc) {
-
+        switch (id){
+            case R.id.nav_update_profile:
+                startActivity(new Intent(Home.this, ProfileAcitvity.class));
+                break;
+            case R.id.nav_logout:
+                sessionHelper.logout();
+                startActivity(new Intent(Home.this, LoginActivity.class));
+                break;
         }
+
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 }

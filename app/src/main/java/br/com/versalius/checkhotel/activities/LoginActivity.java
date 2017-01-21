@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,10 +25,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import br.com.versalius.checkhotel.R;
+import br.com.versalius.checkhotel.model.User;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
 import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class LoginActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -36,14 +39,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     private EditText etPassword;
     private CoordinatorLayout coordinatorLayout;
     private HashMap<String, String> formData;
+    SessionHelper sessionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        formData = new HashMap<>();
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-        setUpViews();
+        sessionHelper = new SessionHelper(LoginActivity.this);
+        if (sessionHelper.isLogged()) {
+            startActivity(new Intent(LoginActivity.this, Home.class));
+        } else {
+            setContentView(R.layout.activity_login);
+            formData = new HashMap<>();
+            coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+            setUpViews();
+        }
 
     }
 
@@ -76,6 +85,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     if (jsonObject.getBoolean("status")) {
+                                        User user = new User(jsonObject.getJSONObject("data").getJSONObject("userData"));
+                                        sessionHelper.saveUser(user);
                                         startActivity(new Intent(LoginActivity.this, Home.class));
                                     } else {
                                         CustomSnackBar.make(coordinatorLayout, "Email e/ou senha incorreto(s)", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
@@ -138,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 etPassword.requestFocus();
                 isFocusRequested = true;
             }
-        }else {
+        } else {
             formData.put("password", etPassword.getText().toString());
         }
 

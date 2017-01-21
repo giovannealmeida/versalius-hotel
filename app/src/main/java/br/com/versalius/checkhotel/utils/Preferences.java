@@ -15,15 +15,11 @@ public class Preferences {
     public static final String USER_PREFERENCES = "user_prefs";
 
     //Nome das chaves
-    public static final String USER_CPF = "user_cpf";
-    public static final String USER_PASSWORD = "user_password";
-    public static final String USER_FIRST_NAME = "user_first_name";
+    public static final String USER_NAME = "name";
     public static final String USER_ID = "user_id";
-    //Esta chave deve ser usada junto com o id da cidade.
-    // Ex.: neighborhood_1212 é a chave que guarda o id do último bairro par a cidade de id 1212
-    public static final String USER_LAST_NEIGHBORHOOD_OF = "neighborhood_";
-    public static final String FORM_LAST_UPDATE = "form_last_update";
-    public static final String FORM_PENDING = "form_pending"; //JSONArray com id dos forms pendentes
+    public static final String USER_EMAIL = "email";
+    public static final String USER_AVATAR = "avatar";
+    public static final String USER_KEY = "key";
 
     private static Preferences instance;
     private SharedPreferences sharedPreferences;
