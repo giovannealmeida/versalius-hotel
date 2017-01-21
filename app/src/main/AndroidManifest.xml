@@ -41,6 +41,10 @@
                 android:value="br.com.versalius.checkhotel.activities.Home" />
         </activity>
 
+=======
+        <activity
+            android:name=".activities.ForgotPasswordActivity"></activity>
+>>>>>>> 5c3be259d93b2843286c2e5cd900a5ec617a9d1c
     </application>
 
 </manifest>

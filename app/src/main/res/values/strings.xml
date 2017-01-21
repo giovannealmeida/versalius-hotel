@@ -5,14 +5,18 @@
     <string name="copyright">© Copyright 2016 VERSALIUS</string>
     <string name="forgot_password"><u>Esqueceu sua senha?</u></string>
     <string name="singup"><u>Cadastre-se</u></string>
+
     <string name="checkin"><u>Check in</u></string>
     <string name="checkout"><u>Check out</u></string>
+    <string name="send"><u>Enviar</u></string>
     <string name="dont_have_acc">Não possui uma conta?</string>
 
     <!--Titles-->
     <string name="title_signup">CADASTRO</string>
     <string name="title_checkin">CHECK IN</string>
     <string name="title_checkout">CHECK OUT</string>
+
+    <string name="title_forgot_password">ESQUECEU A SENHA</string>
     <string name="title_dialog_permission">Permissão requerida</string>
     <string name="title_crop_activity">Cortar Imagem</string>
     <string name="title_activity_home">Home</string>
@@ -99,6 +103,7 @@
     <string name="err_msg_must_select_state">Selecione um estado</string>
 
     <string name="err_msg_existing_email">Este email já está em uso</string>
+    <string name="err_msg_no_existing_email">Este email não está cadastrado</string>
     <string name="err_msg_existing_cpf">Este CPF já está em uso</string>
     <string name="err_msg_city">Insira uma cidade</string>
     <string name="err_msg_short_password">A senha deve possuir de 6 a 22 caracteres</string>
@@ -189,6 +194,10 @@
 
     <string name="action_settings">Settings</string>
 
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+
 </resources>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="br.com.versalius.checkhotel.activities.LoginActivity">
+    tools:context="br.com.versalius.checkhotel.activities.SingupActivity">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
