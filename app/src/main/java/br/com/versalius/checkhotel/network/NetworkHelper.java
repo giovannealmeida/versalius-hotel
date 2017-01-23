@@ -31,7 +31,7 @@ public class NetworkHelper {
 //    private final String DOMINIO = "http://192.168.1.106/akijob/api"; // Repo
 
     private final String LOGIN = "/login_controller";
-    private final String SIGNUP = "/user_controller/update";
+    private final String SIGNUP = "/login_controller/register";
     private final String FORGOT_PASSWORD = "/login_controller/forgot_password_send_hash";
     private final String CHECK_EMAIL = "/user_controller/email_check";
     private final String CHECK_CPF = "/user_controller/cpf_check";
@@ -39,6 +39,7 @@ public class NetworkHelper {
     private final String COUNTRY = "/countries_controller";
     private final String STATE = "/states_controller";
     private final String CITY = "/cities_controller";
+    private final String GEO_FULL = "/cities_controller/geolocalizacao_full";
     private final String USER = "/user_controller";
 
 
@@ -101,6 +102,16 @@ public class NetworkHelper {
                 null, //GET não precisa de parâmetro no corpo
                 TAG,
                 buildGetURL(DOMINIO + CITY, params),
+                callback);
+    }
+
+    public void getGeoFull(int cityId, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("city_id", String.valueOf(cityId));
+        execute(Request.Method.GET,
+                null, //GET não precisa de parâmetro no corpo
+                TAG,
+                buildGetURL(DOMINIO + GEO_FULL, params),
                 callback);
     }
 

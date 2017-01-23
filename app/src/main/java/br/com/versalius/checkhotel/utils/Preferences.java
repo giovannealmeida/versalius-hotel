@@ -20,6 +20,7 @@ public class Preferences {
     public static final String USER_EMAIL = "email";
     public static final String USER_AVATAR = "avatar";
     public static final String USER_KEY = "key";
+    public static final String USER_CITY_ID = "city_id";
 
     private static Preferences instance;
     private SharedPreferences sharedPreferences;

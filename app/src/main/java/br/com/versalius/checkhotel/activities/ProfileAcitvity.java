@@ -109,6 +109,12 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
     private Spinner spCountry;
     private Spinner spState;
 
+    //Localização do usuário
+
+    private int continent_id;
+    private int country_id;
+    private int state_id;
+
     private ImageView ivCpfCheck;
 
     private ArrayAdapter<String> spCountryArrayAdapter;
@@ -266,6 +272,31 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
             public void onFail(VolleyError error) {
                 Log.i("RESPONSE-FAIL", error.getMessage());
                 progressHelper.dismiss();
+            }
+        });
+
+        //pega a localização completa do usuário
+        NetworkHelper.getInstance(ProfileAcitvity.this).getGeoFull(sessionHelper.getCityId(), new ResponseCallback() {
+            @Override
+            public void onSuccess(String jsonStringResponse) {
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                    if (jsonObject.getBoolean("status")) {
+                        //Log.v("Geolocalizacao", jsonObject.getJSONObject("data").getString("continent_id"));
+                        /*continent_id = jsonObject.getJSONObject("data").getInt("continent_id");
+                        country_id = jsonObject.getJSONObject("data").getInt("country_id");
+                        state_id = jsonObject.getJSONObject("data").getInt("state_id");*/
+                    } else {
+                        CustomSnackBar.make(coordinatorLayout, "Não foi possível carregar sua localização", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(VolleyError error) {
+                Log.i("RESPONSE-FAIL", error.getMessage());
             }
         });
 
@@ -567,6 +598,9 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         spState = (Spinner) findViewById(R.id.spState);
         spCity = (Spinner) findViewById(R.id.spCity);
 
+        Log.v("Continent_id", String.valueOf(continent_id));
+        spContinent.setSelection(continent_id);
+
         /*
         ** Carrega Países de um continente
          */
@@ -610,6 +644,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                             spCountry.setEnabled(true);
                             spCountryArrayAdapter.notifyDataSetChanged();
                             progressHelper.dismiss();
+                            spCountry.setSelection(country_id);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -671,6 +706,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                 spState.setEnabled(true);
                                 spStateArrayAdapter.notifyDataSetChanged();
                                 progressHelper.dismiss();
+                                spState.setSelection(state_id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -734,6 +770,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                 spCity.setEnabled(true);
                                 spCityArrayAdapter.notifyDataSetChanged();
                                 progressHelper.dismiss();
+                                spCity.setSelection(sessionHelper.getCityId());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

@@ -50,6 +50,10 @@ public class SessionHelper {
         return Long.valueOf(Preferences.getInstance(context).load(Preferences.USER_ID));
     }
 
+    public static int getCityId() {
+        return Integer.parseInt(Preferences.getInstance(context).load(Preferences.USER_CITY_ID));
+    }
+
     public static void saveUser(User user) {
         try {
             Preferences.getInstance(context).save(
@@ -62,6 +66,8 @@ public class SessionHelper {
                     Preferences.USER_ID, user.getId());
             Preferences.getInstance(context).save(
                     Preferences.USER_KEY, user.getKey());
+            Preferences.getInstance(context).save(
+                    Preferences.USER_CITY_ID, user.getCity_id());
         } catch (Exception e) {
             e.printStackTrace();
         }
