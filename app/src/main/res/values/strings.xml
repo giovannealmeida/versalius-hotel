@@ -54,11 +54,7 @@
     <string name="hint_city_spinner">Selecione uma cidade…</string>
     <string name="hint_check_in">Data e horário do check in</string>
     <string name="hint_check_out">Data e horário do check out</string>
-    <string name="hint_booking_number">Número da reserva</string>
-    <string name="hint_arriving_from">Chegando de</string>
-    <string name="hint_next_destination">Próximo Destino</string>
-    <string name="hint_vehicle_type">Tipo de veículo</string>
-    <string name="hint_travel_motivation">Motivo da viagem</string>
+    <string name="hint_booking_number">Número da reserva *</string>
     <string name="hint_observations">Observações..</string>
 
     <!--Labels-->
@@ -71,6 +67,10 @@
     <string name="lb_identification">Documento de Identificação *</string>
     <string name="lb_check_in">Check in</string>
     <string name="lb_check_out">Check out</string>
+    <string name="lb_vehicle_type">Tipo de veículo</string>
+    <string name="lb_travel_motivation">Motivo da viagem</string>
+    <string name="lb_arriving_from">Chegando de</string>
+    <string name="lb_next_destination">Próximo Destino</string>
 
     <!--Mensagens de erros-->
 
@@ -84,6 +84,7 @@
     <string name="err_msg_empty_street">Insira o nome da sua rua</string>
     <string name="err_msg_empty_neighborhood">Insira o nome do seu bairro</string>
     <string name="err_msg_empty_zipcode">Insira o seu código postal</string>
+    <string name="err_msg_empty_booking_number">Insira o seu número de reserva</string>
 
     <string name="err_msg_invalid_identification">Número do documento de identificação inválido</string>
     <string name="err_msg_invalid_cpf">Número do documento de identificação inválido</string>
@@ -97,6 +98,7 @@
     <string name="err_msg_invalid_twitter">Twitter inválido</string>
     <string name="err_msg_invalid_birthday">Data de nascimento inválida</string>
     <string name="err_msg_invalid_phone">Número inválido</string>
+    <string name="err_msg_invalid_booking_number">Número de reserva inválido</string>
 
     <string name="err_msg_must_select_one">Selecione uma opção</string>
     <string name="err_msg_must_select_city">Selecione uma cidade</string>
