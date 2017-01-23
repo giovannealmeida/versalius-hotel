@@ -15,13 +15,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -41,6 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -70,7 +69,7 @@ import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusChangeListener{
+public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusChangeListener {
     SessionHelper sessionHelper;
     private String DOMINIO = "http://checkhotel.versalius.com.br/";
     private TextInputLayout tilName;
@@ -112,8 +111,9 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
     //Localização do usuário
 
     private int continent_id;
-    private int country_id;
-    private int state_id;
+    private String country;
+    private String state;
+    private String city;
 
     private ImageView ivCpfCheck;
 
@@ -150,6 +150,8 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
             startActivity(new Intent(ProfileAcitvity.this, LoginActivity.class));
         } else {
             setContentView(R.layout.activity_profile_acitvity);
+            formData = new HashMap<>();
+            coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
             getSupportActionBar().setLogo(R.drawable.toolbar_logo);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.title_profile);
@@ -224,6 +226,35 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         etNeighborhood.setOnFocusChangeListener(this);
         etZipCode.setOnFocusChangeListener(this);
 
+        spCountry = (Spinner) findViewById(R.id.spCountry);
+        spCountry.setEnabled(false);
+        spCountryListData = new ArrayList<>();
+        spCountryListData.add("Selecione um país...");
+        spCountryArrayAdapter = new ArrayAdapter<>(ProfileAcitvity.this, android.R.layout.simple_spinner_dropdown_item, spCountryListData);
+        spCountry.setAdapter(spCountryArrayAdapter);
+
+        spState = (Spinner) findViewById(R.id.spState);
+        spState.setEnabled(false);
+        spStateListData = new ArrayList<>();
+        spStateListData.add("Selecione um estado...");
+        spStateArrayAdapter = new ArrayAdapter<>(ProfileAcitvity.this, android.R.layout.simple_spinner_dropdown_item, spStateListData);
+        spState.setAdapter(spStateArrayAdapter);
+
+
+        spCity = (Spinner) findViewById(R.id.spCity);
+        spCity.setEnabled(false);
+        spCityListData = new ArrayList<>();
+        spCityListData.add("Selecione uma cidade...");
+        spCityArrayAdapter = new ArrayAdapter<>(ProfileAcitvity.this, android.R.layout.simple_spinner_dropdown_item, spCityListData);
+        spCity.setAdapter(spCityArrayAdapter);
+
+        spContinent = (Spinner) findViewById(R.id.spContinent);
+        spCountry = (Spinner) findViewById(R.id.spCountry);
+        spState = (Spinner) findViewById(R.id.spState);
+        spCity = (Spinner) findViewById(R.id.spCity);
+
+
+
         /* Carregas os dados dos campos */
         final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
         progressHelper.createProgressSpinner("Aguarde", "Carregando dados", true, false);
@@ -234,25 +265,27 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     progressHelper.dismiss();
                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                     if (jsonObject.getBoolean("status")) {
-                        User user = new User(jsonObject.getJSONObject("userData"));
-                        new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
+                        User user = new User(jsonObject);
+                        if (sessionHelper.getAvatar().isEmpty()) {
+                            new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
+                        }
                         etName.setText(user.getName());
                         etEmail.setText(user.getEmail());
                         etBirthday.setText(user.getBirthday());
-                        if(user.getRg() != null) {
+                        if (user.getRg() != null) {
                             rgIdentification.check(R.id.rbRG);
                             etIdentification.setText(user.getRg());
                             etShippingAgent.setText(user.getShipping_agent());
                             etCPF.setText(user.getCpf());
-                        }else {
+                        } else {
                             rgIdentification.check(R.id.rbPassport);
                             etIdentification.setText(user.getPassport());
                         }
                         etNationality.setText(user.getNationality());
                         etProfession.setText(user.getProfession());
-                        if (user.getGender_id() == 1){
+                        if (user.getGender_id() == 1) {
                             rgGender.check(R.id.rbMale);
-                        }else{
+                        } else {
                             rgGender.check(R.id.rbFemale);
                         }
                         etStreet.setText(user.getStreet());
@@ -282,10 +315,11 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                 try {
                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                     if (jsonObject.getBoolean("status")) {
-                        //Log.v("Geolocalizacao", jsonObject.getJSONObject("data").getString("continent_id"));
-                        /*continent_id = jsonObject.getJSONObject("data").getInt("continent_id");
-                        country_id = jsonObject.getJSONObject("data").getInt("country_id");
-                        state_id = jsonObject.getJSONObject("data").getInt("state_id");*/
+                        continent_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("continent_id"));
+                        country = jsonObject.getJSONObject("data").getString("country_name");
+                        state = jsonObject.getJSONObject("data").getString("state_name");
+                        city = jsonObject.getJSONObject("data").getString("city_name");
+                        spContinent.setSelection(continent_id);
                     } else {
                         CustomSnackBar.make(coordinatorLayout, "Não foi possível carregar sua localização", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                     }
@@ -571,35 +605,6 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
             }
         });
 
-        spCountry = (Spinner) findViewById(R.id.spCountry);
-        spCountry.setEnabled(false);
-        spCountryListData = new ArrayList<>();
-        spCountryListData.add("Selecione um país...");
-        spCountryArrayAdapter = new ArrayAdapter<>(ProfileAcitvity.this, android.R.layout.simple_spinner_dropdown_item, spCountryListData);
-        spCountry.setAdapter(spCountryArrayAdapter);
-
-        spState = (Spinner) findViewById(R.id.spState);
-        spState.setEnabled(false);
-        spStateListData = new ArrayList<>();
-        spStateListData.add("Selecione um estado...");
-        spStateArrayAdapter = new ArrayAdapter<>(ProfileAcitvity.this, android.R.layout.simple_spinner_dropdown_item, spStateListData);
-        spState.setAdapter(spStateArrayAdapter);
-
-
-        spCity = (Spinner) findViewById(R.id.spCity);
-        spCity.setEnabled(false);
-        spCityListData = new ArrayList<>();
-        spCityListData.add("Selecione uma cidade...");
-        spCityArrayAdapter = new ArrayAdapter<>(ProfileAcitvity.this, android.R.layout.simple_spinner_dropdown_item, spCityListData);
-        spCity.setAdapter(spCityArrayAdapter);
-
-        spContinent = (Spinner) findViewById(R.id.spContinent);
-        spCountry = (Spinner) findViewById(R.id.spCountry);
-        spState = (Spinner) findViewById(R.id.spState);
-        spCity = (Spinner) findViewById(R.id.spCity);
-
-        Log.v("Continent_id", String.valueOf(continent_id));
-        spContinent.setSelection(continent_id);
 
         /*
         ** Carrega Países de um continente
@@ -608,7 +613,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         spContinent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, final int i, long l) {
                 /* Carrega o array de ids */
                 String[] continent_ids = getResources().getStringArray(R.array.array_continent_id);
                 /* Através da posição do estado selecionado no spinner, descobre-se o id dele */
@@ -644,7 +649,13 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                             spCountry.setEnabled(true);
                             spCountryArrayAdapter.notifyDataSetChanged();
                             progressHelper.dismiss();
-                            spCountry.setSelection(country_id);
+                            SpinnerAdapter adapter = spCountry.getAdapter();
+                            for (int iPos = 0; iPos < spCountry.getCount(); iPos++) {
+                                if (country.trim().equals(adapter.getItem(iPos).toString().trim())) {
+                                    spCountry.setSelection(iPos);
+                                    break;
+                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -706,7 +717,13 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                 spState.setEnabled(true);
                                 spStateArrayAdapter.notifyDataSetChanged();
                                 progressHelper.dismiss();
-                                spState.setSelection(state_id);
+                                SpinnerAdapter adapter = spState.getAdapter();
+                                for (int iPos = 0; iPos < spState.getCount(); iPos++) {
+                                    if (state.trim().equals(adapter.getItem(iPos).toString().trim())) {
+                                        spState.setSelection(iPos);
+                                        break;
+                                    }
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -770,7 +787,13 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                 spCity.setEnabled(true);
                                 spCityArrayAdapter.notifyDataSetChanged();
                                 progressHelper.dismiss();
-                                spCity.setSelection(sessionHelper.getCityId());
+                                SpinnerAdapter adapter = spCity.getAdapter();
+                                for (int iPos = 0; iPos < spCity.getCount(); iPos++) {
+                                    if (city.trim().equals(adapter.getItem(iPos).toString().trim())) {
+                                        spCity.setSelection(iPos);
+                                        break;
+                                    }
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -824,7 +847,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                             @Override
                             public void onFail(VolleyError error) {
                                 progressHelper.dismiss();
-                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                //CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                             }
                         });
                     } else
@@ -841,7 +864,8 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
      * Valida os campos do formulário setando mensagens de erro
      */
     private boolean isValidForm() {
-
+        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
+        formData.put("key", sessionHelper.getUserKey());
         formData.put("birthday", etBirthday.getText().toString());
         formData.put("number", etNumber.getText().toString());
         formData.put("neighborhood", etNeighborhood.getText().toString());
@@ -980,7 +1004,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
 
 
     private boolean hasValidEmail() {
-        String email = etEmail.getText().toString().trim();
+        final String email = etEmail.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError(getResources().getString(R.string.err_msg_empty_email));
             return false;
@@ -992,7 +1016,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbEmailCheck);
         findViewById(R.id.ivEmailCheck).setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        NetworkHelper.getInstance(this).emailExists(email, new ResponseCallback() {
+        NetworkHelper.getInstance(this).emailBelongs(String.valueOf(sessionHelper.getUserId()), email, new ResponseCallback() {
             @Override
             public void onSuccess(String jsonStringResponse) {
                 findViewById(R.id.ivEmailCheck).setVisibility(View.VISIBLE);
@@ -1000,12 +1024,36 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                 try {
                     JSONObject json = new JSONObject(jsonStringResponse);
                     if (json.getBoolean("status")) { /* O email existe */
-                        tilEmail.setError(getResources().getString(R.string.err_msg_existing_email));
-                        ((ImageView) findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_close_circle));
-                        ((ImageView) findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 239, 83, 80));
-                    } else {
                         ((ImageView) findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_check));
                         ((ImageView) findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 0, 192, 96));
+                    } else {
+                        NetworkHelper.getInstance(ProfileAcitvity.this).emailExists(email, new ResponseCallback() {
+                            @Override
+                            public void onSuccess(String jsonStringResponse) {
+                                findViewById(R.id.ivEmailCheck).setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                                try {
+                                    JSONObject json = new JSONObject(jsonStringResponse);
+                                    if (json.getBoolean("status")) { /* O email existe */
+                                        tilEmail.setError(getResources().getString(R.string.err_msg_existing_email));
+                                        ((ImageView) findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_close_circle));
+                                        ((ImageView) findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 239, 83, 80));
+                                    } else {
+                                        ((ImageView) findViewById(R.id.ivEmailCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_check));
+                                        ((ImageView) findViewById(R.id.ivEmailCheck)).setColorFilter(Color.argb(255, 0, 192, 96));
+
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFail(VolleyError error) {
+                                tilEmail.setError(getResources().getString(R.string.err_msg_server_fail));
+                                findViewById(R.id.ivEmailCheck).setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1024,7 +1072,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
     }
 
     private boolean hasValidCpf() {
-        String cpf = etCPF.getText().toString().trim();
+        final String cpf = etCPF.getText().toString().trim();
         pat = Pattern.compile("^[0-9]{3}[\\.][0-9]{3}[\\.][0-9]{3}[\\-][0-9]{2}$");
         mat = pat.matcher(cpf);
         if (TextUtils.isEmpty(cpf)) {
@@ -1041,7 +1089,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbCpfCheck);
         findViewById(R.id.ivCpfCheck).setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        NetworkHelper.getInstance(this).cpfExists(cpf, new ResponseCallback() {
+        NetworkHelper.getInstance(this).cpfBelongs(String.valueOf(sessionHelper.getUserId()), cpf, new ResponseCallback() {
             @Override
             public void onSuccess(String jsonStringResponse) {
                 findViewById(R.id.ivCpfCheck).setVisibility(View.VISIBLE);
@@ -1049,12 +1097,35 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                 try {
                     JSONObject json = new JSONObject(jsonStringResponse);
                     if (json.getBoolean("status")) { /* O cpf existe */
-                        tilCPF.setError(getResources().getString(R.string.err_msg_existing_cpf));
-                        ((ImageView) findViewById(R.id.ivCpfCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_close_circle));
-                        ((ImageView) findViewById(R.id.ivCpfCheck)).setColorFilter(Color.argb(255, 239, 83, 80));
-                    } else {
                         ((ImageView) findViewById(R.id.ivCpfCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_check));
                         ((ImageView) findViewById(R.id.ivCpfCheck)).setColorFilter(Color.argb(255, 0, 192, 96));
+                    } else {
+                        NetworkHelper.getInstance(ProfileAcitvity.this).cpfExists(cpf, new ResponseCallback() {
+                            @Override
+                            public void onSuccess(String jsonStringResponse) {
+                                findViewById(R.id.ivCpfCheck).setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                                try {
+                                    JSONObject json = new JSONObject(jsonStringResponse);
+                                    if (json.getBoolean("status")) { /* O cpf existe */
+                                        tilCPF.setError(getResources().getString(R.string.err_msg_existing_cpf));
+                                        ((ImageView) findViewById(R.id.ivCpfCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_close_circle));
+                                        ((ImageView) findViewById(R.id.ivCpfCheck)).setColorFilter(Color.argb(255, 239, 83, 80));
+                                    } else {
+                                        ((ImageView) findViewById(R.id.ivCpfCheck)).setImageDrawable(ContextCompat.getDrawable(ProfileAcitvity.this, R.drawable.ic_check));
+                                        ((ImageView) findViewById(R.id.ivCpfCheck)).setColorFilter(Color.argb(255, 0, 192, 96));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFail(VolleyError error) {
+                                tilCPF.setError(getResources().getString(R.string.err_msg_server_fail));
+                                findViewById(R.id.ivCpfCheck).setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

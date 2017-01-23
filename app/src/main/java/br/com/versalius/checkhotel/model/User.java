@@ -1,5 +1,8 @@
 package br.com.versalius.checkhotel.model;
 
+import android.util.Log;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -32,25 +35,31 @@ public class User implements Serializable {
 
     public User(JSONObject json) {
         if (json != null) {
-            this.id = json.optLong("id");
-            this.avatar = json.optString("avatar", "");
-            this.name = json.optString("name", "");
-            this.email = json.optString("email", "");
-            this.birthday = json.optString("birthday", "");
-            this.email = json.optString("email", "");
-            this.gender_id = json.optInt("gender_id");
-            this.phone = json.optString("phone");
-            this.rg = json.optString("rg");
-            this.passport = json.optString("passport");
-            this.shipping_agent = json.optString("shipping_agent");
-            this.nationality = json.optString("nationality");
-            this.street = json.optString("street");
-            this.number = json.optString("number");
-            this.zip_code = json.optString("zipcode");
-            this.city_id = json.optInt("city_id");
-            this.profession = json.optString("profession");
-            this.neighborhood = json.optString("neighborhood");
-            this.cpf = json.optString("cpf");
+            try {
+                this.id = json.getJSONObject("userData").optLong("id");
+                this.avatar = json.getJSONObject("userData").optString("avatar", "");
+                this.name = json.getJSONObject("userData").optString("name", "");
+                this.email = json.getJSONObject("userData").optString("email", "");
+                this.birthday = json.getJSONObject("userData").optString("birthday", "");
+                this.email = json.getJSONObject("userData").optString("email", "");
+                this.gender_id = json.getJSONObject("userData").optInt("gender_id");
+                this.phone = json.getJSONObject("userData").optString("phone");
+                this.rg = json.getJSONObject("userData").optString("rg");
+                this.passport = json.getJSONObject("userData").optString("passport");
+                this.shipping_agent = json.getJSONObject("userData").optString("shipping_agent");
+                this.nationality = json.getJSONObject("userData").optString("nationality");
+                this.street = json.getJSONObject("userData").optString("street");
+                this.number = json.getJSONObject("userData").optString("number");
+                this.zip_code = json.getJSONObject("userData").optString("zipcode");
+                this.city_id = json.getJSONObject("userData").optInt("city_id");
+                this.profession = json.getJSONObject("userData").optString("profession");
+                this.neighborhood = json.getJSONObject("userData").optString("neighborhood");
+                this.cpf = json.getJSONObject("userData").optString("cpf");
+                this.key = json.optString("key");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             this.key = json.optString("key");
         }
     }

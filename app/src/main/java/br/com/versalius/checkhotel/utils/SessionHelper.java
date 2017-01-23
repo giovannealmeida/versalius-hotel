@@ -54,6 +54,10 @@ public class SessionHelper {
         return Integer.parseInt(Preferences.getInstance(context).load(Preferences.USER_CITY_ID));
     }
 
+    public static String getUserKey() {
+        return Preferences.getInstance(context).load(Preferences.USER_KEY);
+    }
+
     public static void saveUser(User user) {
         try {
             Preferences.getInstance(context).save(

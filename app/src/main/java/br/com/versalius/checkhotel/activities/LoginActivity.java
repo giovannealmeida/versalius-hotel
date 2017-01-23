@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     if (jsonObject.getBoolean("status")) {
-                                        User user = new User(jsonObject.getJSONObject("data").getJSONObject("userData"));
+                                        User user = new User(jsonObject.getJSONObject("data"));
                                         sessionHelper.saveUser(user);
                                         startActivity(new Intent(LoginActivity.this, Home.class));
                                     } else {

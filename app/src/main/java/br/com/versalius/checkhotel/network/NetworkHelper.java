@@ -32,6 +32,7 @@ public class NetworkHelper {
 
     private final String LOGIN = "/login_controller";
     private final String SIGNUP = "/login_controller/register";
+    private final String USER_UPDATE = "/user_controller/update";
     private final String FORGOT_PASSWORD = "/login_controller/forgot_password_send_hash";
     private final String CHECK_EMAIL = "/user_controller/email_check";
     private final String CHECK_CPF = "/user_controller/cpf_check";
@@ -124,10 +125,11 @@ public class NetworkHelper {
     }
 
     public void userUpdate(HashMap<String, String> params, ResponseCallback callback) {
+        Log.v("atualizacao", String.valueOf(params));
         execute(Request.Method.POST,
                 params,
                 TAG,
-                DOMINIO + SIGNUP,
+                DOMINIO + USER_UPDATE,
                 callback);
     }
 
@@ -184,8 +186,32 @@ public class NetworkHelper {
                 callback);
     }
 
+    public void emailBelongs(String userId, String email, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", userId);
+        params.put("email", email);
+
+        execute(Request.Method.GET,
+                null,
+                TAG,
+                buildGetURL(DOMINIO + CHECK_EMAIL, params),
+                callback);
+    }
+
     public void cpfExists(String cpf, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
+        params.put("cpf", cpf);
+
+        execute(Request.Method.GET,
+                null,
+                TAG,
+                buildGetURL(DOMINIO + CHECK_CPF, params),
+                callback);
+    }
+
+    public void cpfBelongs(String userId, String cpf, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", userId);
         params.put("cpf", cpf);
 
         execute(Request.Method.GET,

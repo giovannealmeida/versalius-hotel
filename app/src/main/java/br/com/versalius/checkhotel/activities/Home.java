@@ -79,14 +79,14 @@ public class Home extends AppCompatActivity
             tvEmail = (TextView) headerLayout.findViewById(R.id.tvEmail);
             tvName.setText(sessionHelper.getUserName());
             tvEmail.setText(sessionHelper.getUserEmail());
+            ivAvatar = (ImageView) headerLayout.findViewById(R.id.ivAvatar);;
 
-
-
-            try {
-                ivAvatar = (ImageView) headerLayout.findViewById(R.id.ivAvatar);
-                new DownloadImageTask(ivAvatar).execute(DOMINIO + sessionHelper.getAvatar());
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (sessionHelper.getAvatar().isEmpty()) {
+                try {
+                    new DownloadImageTask(ivAvatar).execute(DOMINIO + sessionHelper.getAvatar());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
 
@@ -151,7 +151,7 @@ public class Home extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.nav_update_profile:
                 startActivity(new Intent(Home.this, ProfileAcitvity.class));
                 break;
@@ -160,7 +160,6 @@ public class Home extends AppCompatActivity
                 startActivity(new Intent(Home.this, LoginActivity.class));
                 break;
         }
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
