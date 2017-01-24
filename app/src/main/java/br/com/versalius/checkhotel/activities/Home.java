@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,14 +80,16 @@ public class Home extends AppCompatActivity
             tvEmail = (TextView) headerLayout.findViewById(R.id.tvEmail);
             tvName.setText(sessionHelper.getUserName());
             tvEmail.setText(sessionHelper.getUserEmail());
-            ivAvatar = (ImageView) headerLayout.findViewById(R.id.ivAvatar);;
+            ivAvatar = (ImageView) headerLayout.findViewById(R.id.ivAvatar);
 
-            if (sessionHelper.getAvatar().isEmpty()) {
+            if (!sessionHelper.getAvatar().equals("null")) {
                 try {
                     new DownloadImageTask(ivAvatar).execute(DOMINIO + sessionHelper.getAvatar());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else{
+                ivAvatar.setImageResource(R.drawable.toolbar_logo);
             }
 
 
