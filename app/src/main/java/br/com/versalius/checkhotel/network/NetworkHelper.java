@@ -41,6 +41,7 @@ public class NetworkHelper {
     private final String STATE = "/states_controller";
     private final String CITY = "/cities_controller";
     private final String GEO_FULL = "/cities_controller/geolocalizacao_full";
+    private final String GET_SESSION = "/user_controller/update_session";
     private final String USER = "/user_controller";
 
 
@@ -116,6 +117,17 @@ public class NetworkHelper {
                 callback);
     }
 
+    public void getSession(int user_id, String key, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(user_id));
+        params.put("key", key);
+        execute(Request.Method.GET,
+                null, //GET não precisa de parâmetro no corpo
+                TAG,
+                buildGetURL(DOMINIO + GET_SESSION, params),
+                callback);
+    }
+
     public void doSignUp(HashMap<String, String> params, ResponseCallback callback) {
         execute(Request.Method.POST,
                 params,
@@ -125,7 +137,7 @@ public class NetworkHelper {
     }
 
     public void userUpdate(HashMap<String, String> params, ResponseCallback callback) {
-        Log.v("atualizacao", String.valueOf(params));
+        Log.v("User_update", String.valueOf(params));
         execute(Request.Method.POST,
                 params,
                 TAG,

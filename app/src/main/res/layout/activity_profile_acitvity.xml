@@ -448,12 +448,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btUpdate"
+                android:id="@+id/btEdit"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:text="@string/title_update" />
+                android:text="@string/title_edit" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

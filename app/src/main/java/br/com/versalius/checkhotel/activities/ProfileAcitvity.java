@@ -135,6 +135,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
 
     private MaterialDialog mMaterialDialog;
     private CircleImageView ivProfile;
+    private ImageButton btGetImage;
 
     private static final int ACTION_RESULT_GET_IMAGE = 1000;
     private static final int REQUEST_PERMISSION_CODE = 1001;
@@ -150,6 +151,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
             startActivity(new Intent(ProfileAcitvity.this, LoginActivity.class));
         } else {
             setContentView(R.layout.activity_profile_acitvity);
+            EventBus.getDefault().register(this);
             formData = new HashMap<>();
             coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
             getSupportActionBar().setLogo(R.drawable.toolbar_logo);
@@ -163,7 +165,8 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
     private void setUpViews() {
         ivProfile = (CircleImageView) findViewById(R.id.ivProfile);
         /* Pegar imagem */
-        ImageButton btGetImage = (ImageButton) findViewById(R.id.btGetImage);
+        btGetImage = (ImageButton) findViewById(R.id.btGetImage);
+        btGetImage.setEnabled(false);
         btGetImage.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -209,6 +212,21 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         etZipCode = (EditText) findViewById(R.id.etZipCode);
         etPhone = (EditText) findViewById(R.id.etPhone);
 
+        etName.setEnabled(false);
+        etEmail.setEnabled(false);
+        etBirthday.setEnabled(false);
+        etIdentification.setEnabled(false);
+        etShippingAgent.setEnabled(false);
+        etCPF.setEnabled(false);
+        etNationality.setEnabled(false);
+        etProfession.setEnabled(false);
+        etStreet.setEnabled(false);
+        etNumber.setEnabled(false);
+        etNeighborhood.setEnabled(false);
+        etZipCode.setEnabled(false);
+        etPhone.setEnabled(false);
+
+
         /* Instanciando ImageVIew */
         ivCpfCheck = (ImageView) findViewById(R.id.ivCpfCheck);
 
@@ -253,6 +271,8 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         spState = (Spinner) findViewById(R.id.spState);
         spCity = (Spinner) findViewById(R.id.spCity);
 
+        spContinent.setEnabled(false);
+
 
 
         /* Carregas os dados dos campos */
@@ -266,7 +286,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                     if (jsonObject.getBoolean("status")) {
                         User user = new User(jsonObject);
-                        if (sessionHelper.getAvatar().isEmpty()) {
+                        if (!sessionHelper.getAvatar().isEmpty()) {
                             new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
                         }
                         etName.setText(user.getName());
@@ -536,10 +556,14 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         rgGender = (RadioGroup) findViewById(R.id.rgGender);
         rbMale = (RadioButton) findViewById(R.id.rbMale);
         rbFemale = (RadioButton) findViewById(R.id.rbFemale);
+        rbMale.setEnabled(false);
+        rbFemale.setEnabled(false);
 
         rgIdentification = (RadioGroup) findViewById(R.id.rgIdentification);
         rbRG = (RadioButton) findViewById(R.id.rbRG);
         rbPassport = (RadioButton) findViewById(R.id.rbPassport);
+        rbRG.setEnabled(false);
+        rbPassport.setEnabled(false);
 
         /** Setei o valor do Hint do EditText de identificação aqui, pois eu não conseguia apagar
          * setando diretamente no layout **/
@@ -630,7 +654,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                 }
 
                 final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
-                progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
+                //progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
 
                 NetworkHelper.getInstance(ProfileAcitvity.this).getCountries(selectedContinetId, new ResponseCallback() {
                     @Override
@@ -646,9 +670,9 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                     countryIdList.put(jArray.getJSONObject(i).getString("name"), jArray.getJSONObject(i).getString("id"));
                                 }
                             }
-                            spCountry.setEnabled(true);
+                            //spCountry.setEnabled(true);
                             spCountryArrayAdapter.notifyDataSetChanged();
-                            progressHelper.dismiss();
+                            //progressHelper.dismiss();
                             SpinnerAdapter adapter = spCountry.getAdapter();
                             for (int iPos = 0; iPos < spCountry.getCount(); iPos++) {
                                 if (country.trim().equals(adapter.getItem(iPos).toString().trim())) {
@@ -698,7 +722,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     }
 
                     final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
-                    progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
+                    //progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
 
                     NetworkHelper.getInstance(ProfileAcitvity.this).getStates(selectedCountryId, new ResponseCallback() {
                         @Override
@@ -714,9 +738,9 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                         stateIdList.put(jArray.getJSONObject(i).getString("name"), jArray.getJSONObject(i).getString("id"));
                                     }
                                 }
-                                spState.setEnabled(true);
+                                //spState.setEnabled(true);
                                 spStateArrayAdapter.notifyDataSetChanged();
-                                progressHelper.dismiss();
+                                //progressHelper.dismiss();
                                 SpinnerAdapter adapter = spState.getAdapter();
                                 for (int iPos = 0; iPos < spState.getCount(); iPos++) {
                                     if (state.trim().equals(adapter.getItem(iPos).toString().trim())) {
@@ -768,7 +792,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     }
 
                     final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
-                    progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);
+                    //progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);
 
                     NetworkHelper.getInstance(ProfileAcitvity.this).getCities(selectedCountryId, new ResponseCallback() {
                         @Override
@@ -784,9 +808,9 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                         cityIdList.put(jArray.getJSONObject(i).getString("name"), jArray.getJSONObject(i).getString("id"));
                                     }
                                 }
-                                spCity.setEnabled(true);
+                                //spCity.setEnabled(true);
                                 spCityArrayAdapter.notifyDataSetChanged();
-                                progressHelper.dismiss();
+                                //progressHelper.dismiss();
                                 SpinnerAdapter adapter = spCity.getAdapter();
                                 for (int iPos = 0; iPos < spCity.getCount(); iPos++) {
                                     if (city.trim().equals(adapter.getItem(iPos).toString().trim())) {
@@ -818,43 +842,92 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
             }
         });
 
-        Button btUpdate = (Button) findViewById(R.id.btUpdate);
-        btUpdate.setOnClickListener(new View.OnClickListener() {
+        final Button btEdit = (Button) findViewById(R.id.btEdit);
+        btEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
-
-                if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
-                    if (isValidForm()) {
-                        progressHelper.createProgressSpinner("Aguarde", "Realizando atualização.", true, false);
-                        NetworkHelper.getInstance(ProfileAcitvity.this).userUpdate(formData, new ResponseCallback() {
-                            @Override
-                            public void onSuccess(String jsonStringResponse) {
-                                try {
-                                    progressHelper.dismiss();
-                                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
-                                    if (jsonObject.getBoolean("status")) {
-                                        CustomSnackBar.make(coordinatorLayout, "Atualização realizada com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
-                                        finish();
-                                    } else {
-                                        CustomSnackBar.make(coordinatorLayout, "Falha ao atualizar", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFail(VolleyError error) {
-                                progressHelper.dismiss();
-                                //CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
-                            }
-                        });
-                    } else
-                        CustomSnackBar.make(coordinatorLayout, "Atenção! Preencha o formulário corretamente.", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.INFO).show();
-
+                if (btEdit.getText().toString().equals("Editar")) {
+                    btGetImage.setEnabled(true);
+                    etName.setEnabled(true);
+                    etEmail.setEnabled(true);
+                    etBirthday.setEnabled(true);
+                    etIdentification.setEnabled(true);
+                    etShippingAgent.setEnabled(true);
+                    etCPF.setEnabled(true);
+                    etNationality.setEnabled(true);
+                    etProfession.setEnabled(true);
+                    etStreet.setEnabled(true);
+                    etNumber.setEnabled(true);
+                    etNeighborhood.setEnabled(true);
+                    etZipCode.setEnabled(true);
+                    etPhone.setEnabled(true);
+                    rbMale.setEnabled(true);
+                    rbFemale.setEnabled(true);
+                    rbRG.setEnabled(true);
+                    rbPassport.setEnabled(true);
+                    spContinent.setEnabled(true);
+                    spCountry.setEnabled(true);
+                    spState.setEnabled(true);
+                    spCity.setEnabled(true);
+                    btEdit.setText("Atualizar");
                 } else {
-                    CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
+
+                    if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
+                        if (isValidForm()) {
+                            progressHelper.createProgressSpinner("Aguarde", "Realizando atualização.", true, false);
+                            NetworkHelper.getInstance(ProfileAcitvity.this).userUpdate(formData, new ResponseCallback() {
+                                @Override
+                                public void onSuccess(String jsonStringResponse) {
+                                    try {
+                                        progressHelper.dismiss();
+                                        JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                        if (jsonObject.getBoolean("status")) {
+                                            NetworkHelper.getInstance(ProfileAcitvity.this).getSession((int) sessionHelper.getUserId(), sessionHelper.getUserKey(), new ResponseCallback() {
+                                                @Override
+                                                public void onSuccess(String jsonStringResponse) {
+                                                    try {
+                                                        progressHelper.dismiss();
+                                                        JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                                        if (jsonObject.getBoolean("status")) {
+                                                            User user = new User(jsonObject.getJSONObject("data"));
+                                                            sessionHelper.saveUser(user);
+                                                            CustomSnackBar.make(coordinatorLayout, "Atualização realizada com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                                                            finish();
+                                                        } else {
+                                                            CustomSnackBar.make(coordinatorLayout, "Falha ao atualizar", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFail(VolleyError error) {
+                                                    progressHelper.dismiss();
+                                                    //CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                                }
+                                            });
+                                        } else {
+                                            CustomSnackBar.make(coordinatorLayout, "Falha ao atualizar", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFail(VolleyError error) {
+                                    progressHelper.dismiss();
+                                    //CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                }
+                            });
+                        } else
+                            CustomSnackBar.make(coordinatorLayout, "Atenção! Preencha o formulário corretamente.", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.INFO).show();
+
+                    } else {
+                        CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                    }
                 }
             }
         });

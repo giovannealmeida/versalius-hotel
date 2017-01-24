@@ -58,6 +58,10 @@ public class SessionHelper {
         return Preferences.getInstance(context).load(Preferences.USER_KEY);
     }
 
+    public static String getUserPassword() {
+        return Preferences.getInstance(context).load(Preferences.USER_PASSWORD);
+    }
+
     public static void saveUser(User user) {
         try {
             Preferences.getInstance(context).save(
@@ -72,6 +76,8 @@ public class SessionHelper {
                     Preferences.USER_KEY, user.getKey());
             Preferences.getInstance(context).save(
                     Preferences.USER_CITY_ID, user.getCity_id());
+            Preferences.getInstance(context).save(
+                    Preferences.USER_PASSWORD, user.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
         }

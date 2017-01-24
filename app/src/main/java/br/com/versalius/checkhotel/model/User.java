@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     private long id;
+    private String password;
     private String avatar;
     private String name;
     private String email;
@@ -37,6 +38,7 @@ public class User implements Serializable {
         if (json != null) {
             try {
                 this.id = json.getJSONObject("userData").optLong("id");
+                this.password = json.getJSONObject("userData").optString("password", "");
                 this.avatar = json.getJSONObject("userData").optString("avatar", "");
                 this.name = json.getJSONObject("userData").optString("name", "");
                 this.email = json.getJSONObject("userData").optString("email", "");
@@ -66,6 +68,10 @@ public class User implements Serializable {
 
     public long getId() {
         return this.id;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getAvatar() {
