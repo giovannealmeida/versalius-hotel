@@ -1,14 +1,17 @@
 package br.com.versalius.checkhotel.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,12 +28,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import br.com.versalius.checkhotel.R;
+import br.com.versalius.checkhotel.network.NetworkHelper;
+import br.com.versalius.checkhotel.network.ResponseCallback;
+import br.com.versalius.checkhotel.utils.CustomSnackBar;
+import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class Home extends AppCompatActivity
@@ -42,6 +54,7 @@ public class Home extends AppCompatActivity
     private TextView tvName;
     private TextView tvEmail;
     private ImageView ivAvatar;
+    private CoordinatorLayout coordinatorLayout;
     SessionHelper sessionHelper;
 
     @Override
@@ -54,6 +67,8 @@ public class Home extends AppCompatActivity
             setContentView(R.layout.activity_home);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+
+            coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -88,7 +103,7 @@ public class Home extends AppCompatActivity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else{
+            } else {
                 ivAvatar.setImageResource(R.drawable.toolbar_logo);
             }
 
@@ -158,6 +173,57 @@ public class Home extends AppCompatActivity
             case R.id.nav_update_profile:
                 startActivity(new Intent(Home.this, ProfileAcitvity.class));
                 break;
+
+            case R.id.nav_alter_password:
+                startActivity(new Intent(Home.this, AlterPasswordActivity.class));
+                break;
+
+            case R.id.nav_delete_acc:
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(Home.this);
+                                progressHelper.createProgressSpinner("Aguarde", "Excluindo conta.", true, false);
+                                NetworkHelper.getInstance(Home.this).userDelete(sessionHelper.getUserId(), sessionHelper.getUserKey(), new ResponseCallback() {
+                                    @Override
+                                    public void onSuccess(String jsonStringResponse) {
+                                        try {
+                                            progressHelper.dismiss();
+                                            JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                            if (jsonObject.getBoolean("status")) {
+                                                CustomSnackBar.make(coordinatorLayout, "Conta Excluída", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                                                sessionHelper.logout();
+                                                startActivity(new Intent(Home.this, LoginActivity.class));
+                                            } else {
+                                                CustomSnackBar.make(coordinatorLayout, "Falha ao excluir conta", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFail(VolleyError error) {
+                                        progressHelper.dismiss();
+                                        CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                    }
+                                });
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //botão NÃO clicado
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Tem certeza que deseja excluir sua conta?").setPositiveButton("SIM", dialogClickListener)
+                        .setNegativeButton("NÃO", dialogClickListener).show();
+                break;
+
+
             case R.id.nav_logout:
                 sessionHelper.logout();
                 startActivity(new Intent(Home.this, LoginActivity.class));

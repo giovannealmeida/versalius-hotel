@@ -286,7 +286,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                     if (jsonObject.getBoolean("status")) {
                         User user = new User(jsonObject);
-                        if (!sessionHelper.getAvatar().isEmpty()) {
+                        if (!sessionHelper.getAvatar().equals("null")) {
                             new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
                         }
                         etName.setText(user.getName());

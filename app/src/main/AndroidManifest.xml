@@ -24,15 +24,15 @@
         </activity>
         <activity
             android:name=".activities.SingupActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CropActivity"
             android:label="@string/title_crop_activity" />
         <activity
             android:name=".activities.Home"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.CheckInActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -48,7 +48,8 @@
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity
             android:name=".activities.ProfileAcitvity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.AlterPasswordActivity"></activity>
     </application>
 
 </manifest>

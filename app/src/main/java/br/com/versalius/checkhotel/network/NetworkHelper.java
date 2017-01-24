@@ -33,8 +33,11 @@ public class NetworkHelper {
     private final String LOGIN = "/login_controller";
     private final String SIGNUP = "/login_controller/register";
     private final String USER_UPDATE = "/user_controller/update";
+    private final String USER_DELETE = "/user_controller/delete";
+    private final String USER_UPDATE_PASSWORD = "/user_controller/alter_password";
     private final String FORGOT_PASSWORD = "/login_controller/forgot_password_send_hash";
     private final String CHECK_EMAIL = "/user_controller/email_check";
+    private final String VALID_OLD_PASSWORD = "/user_controller/verify_passoword";
     private final String CHECK_CPF = "/user_controller/cpf_check";
     private final String SEND_SURVEY = "/survey";
     private final String COUNTRY = "/countries_controller";
@@ -128,6 +131,17 @@ public class NetworkHelper {
                 callback);
     }
 
+    public void userDelete(long user_id, String key, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(user_id));
+        params.put("key", key);
+        execute(Request.Method.GET,
+                null, //GET não precisa de parâmetro no corpo
+                TAG,
+                buildGetURL(DOMINIO + USER_DELETE, params),
+                callback);
+    }
+
     public void doSignUp(HashMap<String, String> params, ResponseCallback callback) {
         execute(Request.Method.POST,
                 params,
@@ -137,11 +151,18 @@ public class NetworkHelper {
     }
 
     public void userUpdate(HashMap<String, String> params, ResponseCallback callback) {
-        Log.v("User_update", String.valueOf(params));
         execute(Request.Method.POST,
                 params,
                 TAG,
                 DOMINIO + USER_UPDATE,
+                callback);
+    }
+
+    public void userUpdatePassword(HashMap<String, String> params, ResponseCallback callback) {
+        execute(Request.Method.POST,
+                params,
+                TAG,
+                DOMINIO + USER_UPDATE_PASSWORD,
                 callback);
     }
 
@@ -197,6 +218,20 @@ public class NetworkHelper {
                 buildGetURL(DOMINIO + CHECK_EMAIL, params),
                 callback);
     }
+
+    public void validOldPassword(long user_id, String password, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(user_id));
+        params.put("old_password", password);
+
+        execute(Request.Method.GET,
+                null,
+                TAG,
+                buildGetURL(DOMINIO + VALID_OLD_PASSWORD, params),
+                callback);
+    }
+
+
 
     public void emailBelongs(String userId, String email, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();

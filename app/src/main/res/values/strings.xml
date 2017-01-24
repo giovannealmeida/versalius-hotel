@@ -5,6 +5,7 @@
     <string name="copyright">© Copyright 2016 VERSALIUS</string>
     <string name="forgot_password"><u>Esqueceu sua senha?</u></string>
     <string name="singup"><u>Cadastre-se</u></string>
+    <string name="alter"><u>Alterar</u></string>
 
     <string name="checkin"><u>Check in</u></string>
     <string name="checkout"><u>Check out</u></string>
@@ -16,6 +17,7 @@
     <string name="title_update">ATUALIZAR</string>
     <string name="title_edit">Editar</string>
     <string name="title_profile">PERFIL</string>
+    <string name="title_alter_password">ALTERAR SENHA</string>
     <string name="title_checkin">CHECK IN</string>
     <string name="title_checkout">CHECK OUT</string>
 
@@ -31,7 +33,9 @@
     <string name="hint_city_required">Cidade *</string>
     <string name="hint_email">Email</string>
     <string name="hint_email_required">Email *</string>
+    <string name="hint_old_password">Senha Antiga</string>
     <string name="hint_password">Senha</string>
+    <string name="hint_old_password_required">Senha Antiga*</string>
     <string name="hint_password_required">Senha *</string>
     <string name="hint_full_name">Nome Completo *</string>
     <string name="hint_rg">RG *</string>
@@ -77,6 +81,7 @@
 
     <string name="err_msg_empty_name">Insira o nome completo</string>
     <string name="err_msg_empty_email">Insira um e-mail válido</string>
+    <string name="err_msg_empty_old_password">Insira uma senha válida</string>
     <string name="err_msg_empty_identification">Insira o número do documento de identificação</string>
     <string name="err_msg_empty_shipping_agent">Insira o órgão expedidor</string>
     <string name="err_msg_empty_cpf">Insira o número do seu CPF</string>
@@ -108,6 +113,7 @@
     <string name="err_msg_must_select_state">Selecione um estado</string>
 
     <string name="err_msg_existing_email">Este email já está em uso</string>
+    <string name="err_msg_password_invalid">Senha inválida</string>
     <string name="err_msg_no_existing_email">Este email não está cadastrado</string>
     <string name="err_msg_existing_cpf">Este CPF já está em uso</string>
     <string name="err_msg_city">Insira uma cidade</string>
@@ -211,5 +217,6 @@
 
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="title_activity_profile_acitvity">ProfileAcitvity</string>
+    <string name="title_activity_alter_password">AlterPasswordActivity</string>
 
 </resources>
