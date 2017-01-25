@@ -56,13 +56,16 @@ public class Home extends AppCompatActivity
     private ImageView ivAvatar;
     private CoordinatorLayout coordinatorLayout;
     SessionHelper sessionHelper;
+    private final int PROFILE_CODE = 1;
+    private final int ALTER_PASSWORD_CODE = 2;
+    private final int CHECKIN_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sessionHelper = new SessionHelper(Home.this);
         if (!sessionHelper.isLogged()) {
-            startActivity(new Intent(Home.this, LoginActivity.class));
+            finish();
         } else {
             setContentView(R.layout.activity_home);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -114,7 +117,7 @@ public class Home extends AppCompatActivity
             btCheckin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Home.this, CheckInActivity.class));
+                    startActivityForResult(new Intent(Home.this, CheckInActivity.class), CHECKIN_CODE);
                 }
             });
 
@@ -171,11 +174,11 @@ public class Home extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_update_profile:
-                startActivity(new Intent(Home.this, ProfileAcitvity.class));
+                startActivityForResult(new Intent(Home.this, ProfileAcitvity.class), PROFILE_CODE);
                 break;
 
             case R.id.nav_alter_password:
-                startActivity(new Intent(Home.this, AlterPasswordActivity.class));
+                startActivityForResult(new Intent(Home.this, AlterPasswordActivity.class), ALTER_PASSWORD_CODE);
                 break;
 
             case R.id.nav_delete_acc:
@@ -193,9 +196,9 @@ public class Home extends AppCompatActivity
                                             progressHelper.dismiss();
                                             JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                             if (jsonObject.getBoolean("status")) {
-                                                CustomSnackBar.make(coordinatorLayout, "Conta Excluída", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
                                                 sessionHelper.logout();
-                                                startActivity(new Intent(Home.this, LoginActivity.class));
+                                                setResult(RESULT_OK,null);
+                                                finish();
                                             } else {
                                                 CustomSnackBar.make(coordinatorLayout, "Falha ao excluir conta", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                                             }
@@ -226,7 +229,7 @@ public class Home extends AppCompatActivity
 
             case R.id.nav_logout:
                 sessionHelper.logout();
-                startActivity(new Intent(Home.this, LoginActivity.class));
+                finish();
                 break;
         }
 
@@ -258,6 +261,23 @@ public class Home extends AppCompatActivity
 
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PROFILE_CODE:
+                if (resultCode == ProfileAcitvity.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Atualização realizada com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
+            case ALTER_PASSWORD_CODE:
+                if (resultCode == AlterPasswordActivity.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Senha alterada", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
+            case CHECKIN_CODE:
+                if (resultCode == CheckInActivity.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Check-in realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
         }
     }
 }

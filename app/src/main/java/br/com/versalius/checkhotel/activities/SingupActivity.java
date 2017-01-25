@@ -726,7 +726,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     if (jsonObject.getBoolean("status")) {
-                                        CustomSnackBar.make(coordinatorLayout, "Cadastro realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                                        setResult(RESULT_OK,null);
                                         finish();
                                     } else {
                                         CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();

@@ -1,6 +1,8 @@
 package br.com.versalius.checkhotel.activities;
 
 import android.app.DatePickerDialog;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +34,9 @@ import java.util.regex.Pattern;
 import br.com.versalius.checkhotel.R;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
+import br.com.versalius.checkhotel.utils.CustomSnackBar;
 import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class CheckInActivity extends AppCompatActivity {
 
@@ -74,6 +79,9 @@ public class CheckInActivity extends AppCompatActivity {
     private ArrayList<String> spCityListDataNext;
     private HashMap<String, String> cityIdListNext;
 
+    private CoordinatorLayout coordinatorLayout;
+    SessionHelper sessionHelper;
+
     private Button btCheckin;
 
     private Pattern pat;
@@ -84,12 +92,21 @@ public class CheckInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_in);
 
-        //EventBus.getDefault().register(this);
-        formData = new HashMap<>();
+        sessionHelper = new SessionHelper(CheckInActivity.this);
+        if (!sessionHelper.isLogged()) {
+            finish();
+        } else {
+            setContentView(R.layout.activity_check_in);
 
-        /* Instanciando layout */
+            coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+            formData = new HashMap<>();
+            setUpViews();
+        }
+    }
+
+    public void setUpViews(){
+         /* Instanciando layout */
 
         tilBoookingNumber = (TextInputLayout) findViewById(R.id.tilBookingNumber);
 
@@ -125,7 +142,7 @@ public class CheckInActivity extends AppCompatActivity {
 
         /* Seta o comportamento do DatePicker */
 
-            final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar nowCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC-3"));
         final DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
@@ -252,9 +269,10 @@ public class CheckInActivity extends AppCompatActivity {
                         return;
                     }
 
-                    loadSpState (selectedCountryId, spStateListDataArriving, stateIdListArriving, spStateArriving, spStateArrayAdapterArriving);
+                    loadSpState(selectedCountryId, spStateListDataArriving, stateIdListArriving, spStateArriving, spStateArrayAdapterArriving);
 
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -286,7 +304,8 @@ public class CheckInActivity extends AppCompatActivity {
 
                     loadSpCity(selectedCountryId, spCityListDataArriving, cityIdListArriving, spCityArriving, spCityArrayAdapterArriving);
 
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -350,9 +369,10 @@ public class CheckInActivity extends AppCompatActivity {
                         return;
                     }
 
-                    loadSpState (selectedCountryId, spStateListDataNext, stateIdListNext, spStateNext, spStateArrayAdapterNext);
+                    loadSpState(selectedCountryId, spStateListDataNext, stateIdListNext, spStateNext, spStateArrayAdapterNext);
 
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -384,7 +404,8 @@ public class CheckInActivity extends AppCompatActivity {
 
                     loadSpCity(selectedCountryId, spCityListDataNext, cityIdListNext, spCityNext, spCityArrayAdapterNext);
 
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -393,21 +414,53 @@ public class CheckInActivity extends AppCompatActivity {
             }
         });
 
-        btCheckin.setOnClickListener(new View.OnClickListener(){
+        btCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isValidForm()) {
+                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckInActivity.this);
+                if (NetworkHelper.isOnline(CheckInActivity.this)) {
+                    if (isValidForm()) {
+                        progressHelper.createProgressSpinner("Aguarde", "Realizando check-in.", true, false);
+                        NetworkHelper.getInstance(CheckInActivity.this).checkIn(formData, new ResponseCallback() {
+                            @Override
+                            public void onSuccess(String jsonStringResponse) {
+                                try {
+                                    progressHelper.dismiss();
+                                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                    Log.v("check-in", String.valueOf(jsonObject));
+                                    if (jsonObject.getBoolean("status")) {
+                                        setResult(RESULT_OK, null);
+                                        finish();
+                                    } else {
+                                        CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-in", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
 
+                            @Override
+                            public void onFail(VolleyError error) {
+                                progressHelper.dismiss();
+                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-in", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                            }
+                        });
+                    } else
+                        CustomSnackBar.make(coordinatorLayout, "Atenção! Preencha o formulário corretamente.", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.INFO).show();
+
+                } else {
+                    CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                 }
             }
         });
     }
 
-    private boolean isValidForm (){
+    private boolean isValidForm() {
 
         // Variável de controle do formulário
         boolean isFocusRequested = false;
-
+        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
+        formData.put("key", sessionHelper.getUserKey());
         /*
          * Verifica se nenhum veículo foi selecionado, caso positivo, seta o valor do veículo
          * como Outro, caso negativo, seta o veículo selecionado
@@ -427,7 +480,7 @@ public class CheckInActivity extends AppCompatActivity {
             formData.put("travel_id", String.valueOf(spTravel.getSelectedItemPosition()));
 
         // Verifica se o número de reserva foi inserido e se é um número válido
-        if (!hasValidBookingNumber()){
+        if (!hasValidBookingNumber()) {
             tilBoookingNumber.requestFocus();
             isFocusRequested = true;
         } else
@@ -438,18 +491,18 @@ public class CheckInActivity extends AppCompatActivity {
          * como null, caso negativo, seta a viagem selecionada
          */
         if (spCityArriving.getSelectedItemPosition() == 0)
-            formData.put("arriving_from_id", "");
+            formData.put("arriving_from_city_id", "");
         else
-            formData.put("arriving_from_id", String.valueOf(spCityArriving.getSelectedItemPosition()));
+            formData.put("arriving_from_city_id", String.valueOf(spCityArriving.getSelectedItemPosition()));
 
         /*
          * Verifica se nenhuma cidade de chegada foi selecionada, caso positivo, seta o valor da cidade
          * como null, caso negativo, seta a viagem selecionada
          */
         if (spCityNext.getSelectedItemPosition() == 0)
-            formData.put("next_destination_id", "");
+            formData.put("next_destination_city_id", "");
         else
-            formData.put("next_destination_id", String.valueOf(spCityNext.getSelectedItemPosition()));
+            formData.put("next_destination_city_id", String.valueOf(spCityNext.getSelectedItemPosition()));
 
         formData.put("observations", etObservations.getText().toString());
         formData.put("checkin", etCheckin.getText().toString());
@@ -457,15 +510,15 @@ public class CheckInActivity extends AppCompatActivity {
         return !isFocusRequested;
     }
 
-    private boolean hasValidBookingNumber (){
+    private boolean hasValidBookingNumber() {
         String bookingNumber = etBookingNumber.getText().toString().trim();
         pat = Pattern.compile("^[0-9]+$");
         mat = pat.matcher(bookingNumber);
 
-        if (TextUtils.isEmpty(bookingNumber)){
+        if (TextUtils.isEmpty(bookingNumber)) {
             tilBoookingNumber.setError(getResources().getString(R.string.err_msg_empty_booking_number));
             return false;
-        } else if (!mat.find()){
+        } else if (!mat.find()) {
             tilBoookingNumber.setError(getResources().getString(R.string.err_msg_invalid_booking_number));
             return false;
         }
@@ -474,9 +527,9 @@ public class CheckInActivity extends AppCompatActivity {
         return true;
     }
 
-    private void loadSpCountry (int selectedContinetId, final ArrayList<String> spCountryListData,
+    private void loadSpCountry(int selectedContinetId, final ArrayList<String> spCountryListData,
                                final HashMap<String, String> countryIdList, final Spinner spCountry,
-                               final ArrayAdapter<String> spCountryArrayAdapter){
+                               final ArrayAdapter<String> spCountryArrayAdapter) {
 
         final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckInActivity.this);
         progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
@@ -513,7 +566,7 @@ public class CheckInActivity extends AppCompatActivity {
 
     private void loadSpState(int selectedCountryId, final ArrayList<String> spStateListData,
                              final HashMap<String, String> stateIdList, final Spinner spState,
-                             final ArrayAdapter<String> spStateArrayAdapter){
+                             final ArrayAdapter<String> spStateArrayAdapter) {
 
         final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckInActivity.this);
         progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
@@ -548,9 +601,9 @@ public class CheckInActivity extends AppCompatActivity {
         });
     }
 
-    private void loadSpCity (int selectedCountryId, final ArrayList<String> spCityListData,
-                              final HashMap<String, String> cityIdList, final Spinner spCity,
-                              final ArrayAdapter<String> spCityArrayAdapter){
+    private void loadSpCity(int selectedCountryId, final ArrayList<String> spCityListData,
+                            final HashMap<String, String> cityIdList, final Spinner spCity,
+                            final ArrayAdapter<String> spCityArrayAdapter) {
 
         final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckInActivity.this);
         progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);

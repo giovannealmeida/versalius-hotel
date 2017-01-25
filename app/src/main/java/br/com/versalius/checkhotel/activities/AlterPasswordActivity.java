@@ -30,7 +30,7 @@ import br.com.versalius.checkhotel.utils.CustomSnackBar;
 import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 
-public class AlterPasswordActivity extends AppCompatActivity implements View.OnFocusChangeListener{
+public class AlterPasswordActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     SessionHelper sessionHelper;
     private HashMap<String, String> formData;
@@ -91,7 +91,7 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     if (jsonObject.getBoolean("status")) {
-                                        CustomSnackBar.make(coordinatorLayout, "Senha alterada", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                                        setResult(RESULT_OK, null);
                                         finish();
                                     } else {
                                         CustomSnackBar.make(coordinatorLayout, "Falha ao alterar senha", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();

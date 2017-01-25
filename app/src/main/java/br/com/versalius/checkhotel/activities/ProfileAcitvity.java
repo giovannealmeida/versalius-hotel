@@ -906,7 +906,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                                         if (jsonObject.getBoolean("status")) {
                                                             User user = new User(jsonObject.getJSONObject("data"));
                                                             sessionHelper.saveUser(user);
-                                                            CustomSnackBar.make(coordinatorLayout, "Atualização realizada com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                                                            setResult(RESULT_OK, null);
                                                             finish();
                                                         } else {
                                                             CustomSnackBar.make(coordinatorLayout, "Falha ao atualizar", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();

@@ -46,6 +46,7 @@ public class NetworkHelper {
     private final String GEO_FULL = "/cities_controller/geolocalizacao_full";
     private final String GET_SESSION = "/user_controller/update_session";
     private final String USER = "/user_controller";
+    private final String CHECKIN = "/checkin_controller";
 
 
     private NetworkHelper(Context context) {
@@ -179,6 +180,14 @@ public class NetworkHelper {
                 params,
                 TAG,
                 DOMINIO + LOGIN,
+                callback);
+    }
+
+    public void checkIn(HashMap<String, String> params, ResponseCallback callback) {
+        execute(Request.Method.POST,
+                params,
+                TAG,
+                DOMINIO + CHECKIN,
                 callback);
     }
 

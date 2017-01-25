@@ -39,6 +39,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     private EditText etPassword;
     private CoordinatorLayout coordinatorLayout;
     private HashMap<String, String> formData;
+    private final int SIGNUP_CODE = 1;
+    private final int FORGOT_CODE = 2;
+    private final int FINISH_ACCOUNT_CODE = 3;
+
     SessionHelper sessionHelper;
 
     @Override
@@ -87,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                                     if (jsonObject.getBoolean("status")) {
                                         User user = new User(jsonObject.getJSONObject("data"));
                                         sessionHelper.saveUser(user);
-                                        startActivity(new Intent(LoginActivity.this, Home.class));
+                                        startActivityForResult(new Intent(LoginActivity.this, Home.class), FINISH_ACCOUNT_CODE);
                                     } else {
                                         CustomSnackBar.make(coordinatorLayout, "Email e/ou senha incorreto(s)", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                                     }
@@ -114,14 +118,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
         singup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, SingupActivity.class));
+                startActivityForResult(new Intent(LoginActivity.this, SingupActivity.class), SIGNUP_CODE);
             }
         });
 
         forgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+                startActivityForResult(new Intent(LoginActivity.this, ForgotPasswordActivity.class), FORGOT_CODE);
             }
         });
     }
@@ -190,6 +194,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                     hasValidPassword();
                     break;
             }
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SIGNUP_CODE:
+                if (resultCode == SingupActivity.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Cadastro realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
+            case FORGOT_CODE:
+                if (resultCode == ForgotPasswordActivity.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Email de redefinição de senha enviado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
+            case FINISH_ACCOUNT_CODE:
+                if (resultCode == Home.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Conta Excluída", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
         }
     }
 }

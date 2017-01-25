@@ -88,7 +88,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     if (jsonObject.getBoolean("status")) {
-                                        CustomSnackBar.make(coordinatorLayout, "Email de redefinição de senha enviado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                                        setResult(RESULT_OK,null);
                                         finish();
                                     } else {
                                         CustomSnackBar.make(coordinatorLayout, "Falha ao enviar email de redefinição de senha", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
