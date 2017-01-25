@@ -278,81 +278,95 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         /* Carregas os dados dos campos */
         final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
         progressHelper.createProgressSpinner("Aguarde", "Carregando dados", true, false);
-        NetworkHelper.getInstance(ProfileAcitvity.this).getUser((int) sessionHelper.getUserId(), new ResponseCallback() {
-            @Override
-            public void onSuccess(String jsonStringResponse) {
-                try {
-                    progressHelper.dismiss();
-                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
-                    if (jsonObject.getBoolean("status")) {
-                        User user = new User(jsonObject);
-                        if (!sessionHelper.getAvatar().equals("null")) {
-                            new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
-                        }
-                        etName.setText(user.getName());
-                        etEmail.setText(user.getEmail());
-                        etBirthday.setText(user.getBirthday());
-                        if (user.getRg() != null) {
-                            rgIdentification.check(R.id.rbRG);
-                            etIdentification.setText(user.getRg());
-                            etShippingAgent.setText(user.getShipping_agent());
-                            etCPF.setText(user.getCpf());
+        if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
+            NetworkHelper.getInstance(ProfileAcitvity.this).getUser((int) sessionHelper.getUserId(), new ResponseCallback() {
+                @Override
+                public void onSuccess(String jsonStringResponse) {
+                    try {
+                        progressHelper.dismiss();
+                        JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                        if (jsonObject.getBoolean("status")) {
+                            User user = new User(jsonObject);
+                            if (!sessionHelper.getAvatar().equals("null")) {
+                                new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
+                            }
+                            etName.setText(user.getName());
+                            etEmail.setText(user.getEmail());
+                            etBirthday.setText(user.getBirthday());
+                            if (!user.getRg().equals("null")) {
+                                rgIdentification.check(R.id.rbRG);
+                                etIdentification.setText(user.getRg());
+                                etShippingAgent.setText(user.getShipping_agent());
+                                etCPF.setText(user.getCpf());
+                            } else {
+                                rgIdentification.check(R.id.rbPassport);
+                                etIdentification.setText(user.getPassport());
+                            }
+                            etNationality.setText(user.getNationality());
+                            etProfession.setText(user.getProfession());
+                            if (user.getGender_id() == 1) {
+                                rgGender.check(R.id.rbMale);
+                            } else {
+                                rgGender.check(R.id.rbFemale);
+                            }
+                            etStreet.setText(user.getStreet());
+                            etNumber.setText(user.getNumber());
+                            etNeighborhood.setText(user.getNeighborhood());
+                            etZipCode.setText(user.getZip_code());
+                            etPhone.setText(user.getPhone());
                         } else {
-                            rgIdentification.check(R.id.rbPassport);
-                            etIdentification.setText(user.getPassport());
+                            CustomSnackBar.make(coordinatorLayout, "Não foi possível resgatar seus dados, tente novamente!", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                            finish();
                         }
-                        etNationality.setText(user.getNationality());
-                        etProfession.setText(user.getProfession());
-                        if (user.getGender_id() == 1) {
-                            rgGender.check(R.id.rbMale);
-                        } else {
-                            rgGender.check(R.id.rbFemale);
-                        }
-                        etStreet.setText(user.getStreet());
-                        etNumber.setText(user.getNumber());
-                        etNeighborhood.setText(user.getNeighborhood());
-                        etZipCode.setText(user.getZip_code());
-                        etPhone.setText(user.getPhone());
-                    } else {
-                        CustomSnackBar.make(coordinatorLayout, "Não foi possível resgatar seus dados, tente novamente!", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFail(VolleyError error) {
-                Log.i("RESPONSE-FAIL", error.getMessage());
-                progressHelper.dismiss();
-            }
-        });
+                @Override
+                public void onFail(VolleyError error) {
+                    Log.i("RESPONSE-FAIL", error.getMessage());
+                    progressHelper.dismiss();
+                    finish();
+                }
+            });
+        }else{
+            CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+            finish();
+        }
 
         //pega a localização completa do usuário
-        NetworkHelper.getInstance(ProfileAcitvity.this).getGeoFull(sessionHelper.getCityId(), new ResponseCallback() {
-            @Override
-            public void onSuccess(String jsonStringResponse) {
-                try {
-                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
-                    if (jsonObject.getBoolean("status")) {
-                        continent_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("continent_id"));
-                        country = jsonObject.getJSONObject("data").getString("country_name");
-                        state = jsonObject.getJSONObject("data").getString("state_name");
-                        city = jsonObject.getJSONObject("data").getString("city_name");
-                        spContinent.setSelection(continent_id);
-                    } else {
-                        CustomSnackBar.make(coordinatorLayout, "Não foi possível carregar sua localização", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+        if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
+            NetworkHelper.getInstance(ProfileAcitvity.this).getGeoFull(sessionHelper.getCityId(), new ResponseCallback() {
+                @Override
+                public void onSuccess(String jsonStringResponse) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                        if (jsonObject.getBoolean("status")) {
+                            continent_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("continent_id"));
+                            country = jsonObject.getJSONObject("data").getString("country_name");
+                            state = jsonObject.getJSONObject("data").getString("state_name");
+                            city = jsonObject.getJSONObject("data").getString("city_name");
+                            spContinent.setSelection(continent_id);
+                        } else {
+                            CustomSnackBar.make(coordinatorLayout, "Não foi possível carregar sua localização", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFail(VolleyError error) {
-                Log.i("RESPONSE-FAIL", error.getMessage());
-            }
-        });
+                @Override
+                public void onFail(VolleyError error) {
+                    Log.i("RESPONSE-FAIL", error.getMessage());
+                    finish();
+                }
+            });
+        }else{
+            CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+            finish();
+        }
 
 
         /* Adicionando máscara para o CPF*/
