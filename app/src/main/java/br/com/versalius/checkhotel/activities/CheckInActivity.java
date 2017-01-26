@@ -421,7 +421,7 @@ public class CheckInActivity extends AppCompatActivity {
                 if (NetworkHelper.isOnline(CheckInActivity.this)) {
                     if (isValidForm()) {
                         progressHelper.createProgressSpinner("Aguarde", "Realizando check-in.", true, false);
-                        NetworkHelper.getInstance(CheckInActivity.this).checkIn(formData, new ResponseCallback() {
+                        NetworkHelper.getInstance(CheckInActivity.this).checkedIn(Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
                                 try {
@@ -429,10 +429,32 @@ public class CheckInActivity extends AppCompatActivity {
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     Log.v("check-in", String.valueOf(jsonObject));
                                     if (jsonObject.getBoolean("status")) {
-                                        setResult(RESULT_OK, null);
-                                        finish();
+                                        CustomSnackBar.make(coordinatorLayout, "O check-in para esse número de reserva já foi realizado", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                                     } else {
-                                        CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-in", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                        NetworkHelper.getInstance(CheckInActivity.this).checkIn(formData, new ResponseCallback() {
+                                            @Override
+                                            public void onSuccess(String jsonStringResponse) {
+                                                try {
+                                                    progressHelper.dismiss();
+                                                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                                    Log.v("check-in", String.valueOf(jsonObject));
+                                                    if (jsonObject.getBoolean("status")) {
+                                                        setResult(RESULT_OK, null);
+                                                        finish();
+                                                    } else {
+                                                        CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-in", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFail(VolleyError error) {
+                                                progressHelper.dismiss();
+                                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-in", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                            }
+                                        });
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

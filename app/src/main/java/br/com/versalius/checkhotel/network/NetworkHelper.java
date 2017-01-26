@@ -47,6 +47,7 @@ public class NetworkHelper {
     private final String GET_SESSION = "/user_controller/update_session";
     private final String USER = "/user_controller";
     private final String CHECKIN = "/checkin_controller";
+    private final String GET_CHECKIN = "/checkin_controller/checked_in";
 
 
     private NetworkHelper(Context context) {
@@ -199,6 +200,17 @@ public class NetworkHelper {
                 null, //GET não precisa de parâmetro no corpo
                 TAG,
                 buildGetURL(DOMINIO + USER, params),
+                callback);
+    }
+
+    public void checkedIn(int num_reserve, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("num_reserve", String.valueOf(num_reserve));
+
+        execute(Request.Method.GET,
+                null, //GET não precisa de parâmetro no corpo
+                TAG,
+                buildGetURL(DOMINIO + GET_CHECKIN, params),
                 callback);
     }
 
