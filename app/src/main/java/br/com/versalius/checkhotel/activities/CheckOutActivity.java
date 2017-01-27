@@ -1,5 +1,7 @@
 package br.com.versalius.checkhotel.activities;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +38,8 @@ import br.com.versalius.checkhotel.utils.SessionHelper;
 public class CheckOutActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     private TextInputLayout tilBookingNumber;
+    private TextInputLayout tilItems;
+    private TextInputLayout tilItemsOut;
 
     private EditText etBookingNumber;
     private EditText etCheckout;
@@ -79,6 +83,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
         // Instanciando TextInputLayout
         tilBookingNumber = (TextInputLayout) findViewById(R.id.tilBookingNumber);
+        tilItems = (TextInputLayout) findViewById(R.id.tilIems);
 
         // Instanciando Campos
         etBookingNumber = (EditText) findViewById(R.id.etBookingNumber);
@@ -99,6 +104,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
         // Adicionando FocusListener
         etBookingNumber.setOnFocusChangeListener(this);
+        etItems.setOnFocusChangeListener(this);
 
         // Ação do Add Button
         fabAddItems.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +115,29 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.row_checkout_content, null);
 
+                tilItemsOut = (TextInputLayout) addView.findViewById(R.id.tilIemsOut);
                 spProductsOut = (Spinner) addView.findViewById(R.id.spItemsOut);
                 etItemsOut = (EditText) addView.findViewById(R.id.etItemsOut);
-                container.addView(addView);
-                //Toast.makeText(getBaseContext(), String.valueOf(spProductsOut.getSelectedItemPosition()), Toast.LENGTH_LONG).show();
 
+                View.OnFocusChangeListener listener = new View.OnFocusChangeListener()
+                {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus)
+                    {
+                        if (!hasFocus) {
+                            switch (v.getId()) {
+
+                                case R.id.etItemsOut:
+                                    hasValidItemsOut();
+                                    break;
+                            }
+                        }
+                    }
+                };
+
+                etItemsOut.setOnFocusChangeListener(listener);
+
+                container.addView(addView);
             }
         });
 
@@ -122,9 +146,6 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
             @Override
             public void onClick(View v) {
-
-                //Toast.makeText(getBaseContext(), String.valueOf(spProducts.getSelectedItemPosition()), Toast.LENGTH_LONG).show();
-                //Toast.makeText(getBaseContext(), etItems.getText().toString(), Toast.LENGTH_LONG).show();
 
                 final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckOutActivity.this);
                 if (NetworkHelper.isOnline(CheckOutActivity.this)) {
@@ -213,10 +234,22 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
         // Variável de controle do formulário
         boolean isFocusRequested = false;
-        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
-        formData.put("key", sessionHelper.getUserKey());
+
         // Variável para controlar quantidade de itens consumidos
         int childCount = container.getChildCount();
+
+        // Arrays de String para manter valores dos produtos consumidos e quantidade
+        String [] strItems;
+        String [] strQuantity;
+
+        // Verifica se as views foram adicionadas dinamicamente
+        if (childCount == 0){
+            strItems = new String[1];
+            strQuantity = new String[1];
+        } else {
+            strItems = new String[childCount+1];
+            strQuantity = new String[childCount+1];
+        }
 
         // Verifica se o número de reserva foi inserido e se é um número válido
         if (!hasValidBookingNumber()) {
@@ -225,26 +258,33 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         } else
             formData.put("booking_number", etBookingNumber.getText().toString());
 
-        if (spProducts.getSelectedItemPosition() != 0 && etItems.length() > 0) {
-            formData.put("product_id", String.valueOf(spProducts.getSelectedItemPosition()));
-            formData.put("quantity", etItems.getText().toString());
+        if (spProducts.getSelectedItemPosition() != 0 && !TextUtils.isEmpty(etItems.getText().toString())) {
+            strItems[0] = String.valueOf(spProducts.getSelectedItemPosition());
+            strQuantity[0] = etItems.getText().toString();
         }
 
-        for (int iCount = 0; iCount < childCount; iCount++) {
+        for (int iCount = 1; iCount <= childCount; iCount++) {
 
-            // Verifica a quantidade de novos itens adicionados pelo Float Button
-            View thisChild = container.getChildAt(iCount);
+            // Recura os elementos adicionados pelo Float Button na posicao iCount-1
+            View thisChild = container.getChildAt(iCount-1);
 
-            // Recura todos os elementos adicionados pelo Float Button
+            // Pega os elementos da posicao anterior pelo id
             spProductsOut = (Spinner) thisChild.findViewById(R.id.spItemsOut);
             etItemsOut = (EditText) thisChild.findViewById(R.id.etItemsOut);
 
-            if (spProductsOut.getSelectedItemPosition() != 0 && etItemsOut.length() > 0) {
-                formData.put("product_id", String.valueOf(spProductsOut.getSelectedItemPosition()));
-                formData.put("quantity", etItemsOut.getText().toString());
+            if (spProductsOut.getSelectedItemPosition() != 0 && !TextUtils.isEmpty(etItemsOut.getText().toString())) {
+                strItems[iCount] = String.valueOf(spProductsOut.getSelectedItemPosition());
+                strQuantity[iCount] = etItemsOut.getText().toString();
             }
         }
 
+        //Toast.makeText(getBaseContext(), new Gson().toJson(strItems), Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), new Gson().toJson(strQuantity), Toast.LENGTH_LONG).show();
+
+        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
+        formData.put("key", sessionHelper.getUserKey());
+        formData.put("product_id", new Gson().toJson(strItems));
+        formData.put("quantity", new Gson().toJson(strQuantity));
         formData.put("checkout", etCheckout.getText().toString());
         formData.put("suggestions", etSuggestions.getText().toString());
 
@@ -268,12 +308,42 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         return true;
     }
 
+    private boolean hasValidItems() {
+        String items = etItems.getText().toString().trim();
+
+        if (TextUtils.isEmpty(items)) {
+            tilItems.setError(getResources().getString(R.string.err_msg_invalid_quantity));
+            return false;
+        }
+
+        tilItems.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean hasValidItemsOut() {
+        String itemsOut = etItemsOut.getText().toString().trim();
+
+        if (TextUtils.isEmpty(itemsOut)) {
+            tilItemsOut.setError(getResources().getString(R.string.err_msg_invalid_quantity));
+            //fabAddItems.setEnabled(false);
+            return false;
+        }
+
+        tilItemsOut.setErrorEnabled(false);
+        //fabAddItems.setEnabled(true);
+        return true;
+    }
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (!hasFocus) {
             switch (v.getId()) {
                 case R.id.etBookingNumber:
                     hasValidBookingNumber();
+                    break;
+
+                case R.id.etItems:
+                    hasValidItems();
                     break;
             }
         }
