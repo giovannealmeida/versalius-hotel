@@ -61,6 +61,7 @@
     <string name="hint_check_out">Data e horário do check out</string>
     <string name="hint_booking_number">Número da reserva *</string>
     <string name="hint_observations">Observações..</string>
+    <string name="hint_suggestions">Sugestões..</string>
     <string name="hint_amount">Qtd</string>
 
     <!--Labels-->

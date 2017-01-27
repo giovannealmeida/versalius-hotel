@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,7 +39,7 @@ import br.com.versalius.checkhotel.utils.CustomSnackBar;
 import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 
-public class CheckInActivity extends AppCompatActivity {
+public class CheckInActivity extends AppCompatActivity implements OnFocusChangeListener{
 
     private TextInputLayout tilBookingNumber;
 
@@ -135,6 +136,10 @@ public class CheckInActivity extends AppCompatActivity {
 
         btCheckin = (Button) findViewById(R.id.btCheckin);
 
+        // Adicionando Focus
+        etBookingNumber.setOnFocusChangeListener(this);
+        etCheckin.setOnFocusChangeListener(this);
+
         /* Setando título e Back Button na tela de Check in */
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -169,14 +174,14 @@ public class CheckInActivity extends AppCompatActivity {
             }
         });
 
-        /* //Abre o Date Picker assim que o campo receber foco
+        //Abre o Date Picker assim que o campo receber foco
         etCheckin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus)
                     datePickerDialog.show();
             }
-        }); */
+        });
 
         spCountryArriving.setEnabled(false);
         spCountryListDataArriving = new ArrayList<>();
@@ -659,5 +664,16 @@ public class CheckInActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(!hasFocus){
+            switch (v.getId()){
+                case R.id.etBookingNumber:
+                    hasValidBookingNumber();
+                    break;
+            }
+        }
     }
 }

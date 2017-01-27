@@ -64,7 +64,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         // Instanciando Campos
         etBookingNumber = (EditText) findViewById(R.id.etBookingNumber);
         etCheckout = (EditText) findViewById(R.id.etCheckOut);
-        etSuggestions = (EditText) findViewById(R.id.etObservations);
+        etSuggestions = (EditText) findViewById(R.id.etSuggestions);
         etItems = (EditText) findViewById(R.id.etItems);
 
         // Instanciando Botões
@@ -139,8 +139,10 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         } else
             formData.put("booking_number", etBookingNumber.getText().toString());
 
-        formData.put("checkout", etCheckout.getText().toString());
-        formData.put("suggestions", etSuggestions.getText().toString());
+        if (spProducts.getSelectedItemPosition() != 0 && etItems.length() > 0){
+            formData.put("product_id", String.valueOf(spProducts.getSelectedItemPosition()));
+            formData.put("quantity", etItems.getText().toString());
+        }
 
         for(int iCount=0; iCount<childCount; iCount++){
 
@@ -156,6 +158,9 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
                 formData.put("quantity", etItemsOut.getText().toString());
             }
         }
+
+        formData.put("checkout", etCheckout.getText().toString());
+        formData.put("suggestions", etSuggestions.getText().toString());
 
         return !isFocusRequested;
     }

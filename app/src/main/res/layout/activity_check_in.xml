@@ -23,21 +23,6 @@
             android:paddingTop="@dimen/activity_vertical_margin">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilCheckIn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etCheckIn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:hint="@string/hint_check_in"
-                    android:inputType="text|datetime" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilBookingNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -50,6 +35,21 @@
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_booking_number"
                     android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilCheckIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etCheckIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/hint_check_in"
+                    android:inputType="text|datetime" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
