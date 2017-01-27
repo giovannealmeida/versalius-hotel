@@ -8,6 +8,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,15 +17,23 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.com.versalius.checkhotel.R;
 import br.com.versalius.checkhotel.network.NetworkHelper;
+import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
+import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.SessionHelper;
 
-public class CheckOutActivity extends AppCompatActivity implements View.OnFocusChangeListener{
+public class CheckOutActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     private TextInputLayout tilBookingNumber;
 
@@ -42,6 +51,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
     private LinearLayout container;
     private CoordinatorLayout coordinatorLayout;
+    SessionHelper sessionHelper;
 
     private Pattern pat;
     private Matcher mat;
@@ -51,12 +61,21 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_out);
+        sessionHelper = new SessionHelper(CheckOutActivity.this);
+        if (!sessionHelper.isLogged()) {
+            finish();
+        } else {
+            setContentView(R.layout.activity_check_out);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.title_checkout);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.title_checkout);
 
-        formData = new HashMap<>();
+            formData = new HashMap<>();
+            setUpViews();
+        }
+    }
+
+    public void setUpViews() {
 
         // Instanciando TextInputLayout
         tilBookingNumber = (TextInputLayout) findViewById(R.id.tilBookingNumber);
@@ -82,10 +101,10 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         etBookingNumber.setOnFocusChangeListener(this);
 
         // Ação do Add Button
-        fabAddItems.setOnClickListener(new View.OnClickListener(){
+        fabAddItems.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick (View v){
+            public void onClick(View v) {
 
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.row_checkout_content, null);
@@ -99,19 +118,84 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         });
 
         //Ação do botão de checkout
-        btCheckout.setOnClickListener(new View.OnClickListener(){
+        btCheckout.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
 
                 //Toast.makeText(getBaseContext(), String.valueOf(spProducts.getSelectedItemPosition()), Toast.LENGTH_LONG).show();
                 //Toast.makeText(getBaseContext(), etItems.getText().toString(), Toast.LENGTH_LONG).show();
 
+                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckOutActivity.this);
                 if (NetworkHelper.isOnline(CheckOutActivity.this)) {
-
                     if (isValidForm()) {
+                        progressHelper.createProgressSpinner("Aguarde", "Realizando check-out.", true, false);
+                        NetworkHelper.getInstance(CheckOutActivity.this).checkedIn(sessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
+                            @Override
+                            public void onSuccess(String jsonStringResponse) {
+                                try {
+                                    progressHelper.dismiss();
+                                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                    if (jsonObject.getBoolean("status")) {
+                                        NetworkHelper.getInstance(CheckOutActivity.this).checkedOut(sessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
+                                            @Override
+                                            public void onSuccess(String jsonStringResponse) {
+                                                try {
+                                                    progressHelper.dismiss();
+                                                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                                    if (jsonObject.getBoolean("status")) {
+                                                        CustomSnackBar.make(coordinatorLayout, "O Checkout já foi realizado", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                                    } else {
+                                                        NetworkHelper.getInstance(CheckOutActivity.this).checkOut(formData, new ResponseCallback() {
+                                                            @Override
+                                                            public void onSuccess(String jsonStringResponse) {
+                                                                try {
+                                                                    progressHelper.dismiss();
+                                                                    JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                                                                    if (jsonObject.getBoolean("status")) {
+                                                                        setResult(RESULT_OK, null);
+                                                                        finish();
+                                                                    } else {
+                                                                        CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-out", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                                                    }
+                                                                } catch (JSONException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
 
-                    } else{
+                                                            @Override
+                                                            public void onFail(VolleyError error) {
+                                                                progressHelper.dismiss();
+                                                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-out", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                                            }
+                                                        });
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFail(VolleyError error) {
+                                                progressHelper.dismiss();
+                                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-out", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                            }
+                                        });
+                                    } else {
+                                        CustomSnackBar.make(coordinatorLayout, "É necessário fazer check-in primeiro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFail(VolleyError error) {
+                                progressHelper.dismiss();
+                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar check-out", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                            }
+                        });
+                    } else {
 
                     }
 
@@ -124,11 +208,13 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         });
     }
 
-    private boolean isValidForm (){
+
+    private boolean isValidForm() {
 
         // Variável de controle do formulário
         boolean isFocusRequested = false;
-
+        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
+        formData.put("key", sessionHelper.getUserKey());
         // Variável para controlar quantidade de itens consumidos
         int childCount = container.getChildCount();
 
@@ -139,12 +225,12 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         } else
             formData.put("booking_number", etBookingNumber.getText().toString());
 
-        if (spProducts.getSelectedItemPosition() != 0 && etItems.length() > 0){
+        if (spProducts.getSelectedItemPosition() != 0 && etItems.length() > 0) {
             formData.put("product_id", String.valueOf(spProducts.getSelectedItemPosition()));
             formData.put("quantity", etItems.getText().toString());
         }
 
-        for(int iCount=0; iCount<childCount; iCount++){
+        for (int iCount = 0; iCount < childCount; iCount++) {
 
             // Verifica a quantidade de novos itens adicionados pelo Float Button
             View thisChild = container.getChildAt(iCount);

@@ -49,8 +49,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_check_out"
-                    android:inputType="text|datetime"
-                    android:enabled="false"/>
+                    android:inputType="text|datetime" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -65,8 +64,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_suggestions"
-                    android:inputType="textMultiLine"
-                    android:enabled="false"/>
+                    android:inputType="textMultiLine" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView

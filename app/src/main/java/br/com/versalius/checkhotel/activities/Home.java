@@ -59,6 +59,7 @@ public class Home extends AppCompatActivity
     private final int PROFILE_CODE = 1;
     private final int ALTER_PASSWORD_CODE = 2;
     private final int CHECKIN_CODE = 3;
+    private final int CHECKOUT_CODE = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +126,7 @@ public class Home extends AppCompatActivity
             btCheckout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Home.this, CheckOutActivity.class));
+                    startActivityForResult(new Intent(Home.this, CheckOutActivity.class), CHECKOUT_CODE);
                 }
             });
         }
@@ -277,6 +278,10 @@ public class Home extends AppCompatActivity
             case CHECKIN_CODE:
                 if (resultCode == CheckInActivity.RESULT_OK)
                     CustomSnackBar.make(coordinatorLayout, "Check-in realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
+                break;
+            case CHECKOUT_CODE:
+                if (resultCode == CheckInActivity.RESULT_OK)
+                    CustomSnackBar.make(coordinatorLayout, "Check-out realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
                 break;
         }
     }

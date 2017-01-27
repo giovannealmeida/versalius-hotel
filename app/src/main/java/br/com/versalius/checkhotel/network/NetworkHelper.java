@@ -47,7 +47,9 @@ public class NetworkHelper {
     private final String GET_SESSION = "/user_controller/update_session";
     private final String USER = "/user_controller";
     private final String CHECKIN = "/checkin_controller";
+    private final String CHECKOUT = "/checkin_controller/checkout";
     private final String GET_CHECKIN = "/checkin_controller/checked_in";
+    private final String GET_CHECKOUT = "/checkin_controller/checked_out";
 
 
     private NetworkHelper(Context context) {
@@ -192,6 +194,15 @@ public class NetworkHelper {
                 callback);
     }
 
+    public void checkOut(HashMap<String, String> params, ResponseCallback callback) {
+        Log.v("CheckOut", String.valueOf(params));
+        execute(Request.Method.POST,
+                params,
+                TAG,
+                DOMINIO + CHECKOUT,
+                callback);
+    }
+
     public void getUser(int userId, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", String.valueOf(userId));
@@ -203,14 +214,27 @@ public class NetworkHelper {
                 callback);
     }
 
-    public void checkedIn(int num_reserve, ResponseCallback callback) {
+    public void checkedIn(long user_id, int num_reserve, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(user_id));
         params.put("num_reserve", String.valueOf(num_reserve));
 
         execute(Request.Method.GET,
                 null, //GET não precisa de parâmetro no corpo
                 TAG,
                 buildGetURL(DOMINIO + GET_CHECKIN, params),
+                callback);
+    }
+
+    public void checkedOut(long user_id, int num_reserve, ResponseCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(user_id));
+        params.put("num_reserve", String.valueOf(num_reserve));
+
+        execute(Request.Method.GET,
+                null, //GET não precisa de parâmetro no corpo
+                TAG,
+                buildGetURL(DOMINIO + GET_CHECKOUT, params),
                 callback);
     }
 

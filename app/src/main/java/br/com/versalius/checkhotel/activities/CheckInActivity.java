@@ -426,7 +426,7 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
                 if (NetworkHelper.isOnline(CheckInActivity.this)) {
                     if (isValidForm()) {
                         progressHelper.createProgressSpinner("Aguarde", "Realizando check-in.", true, false);
-                        NetworkHelper.getInstance(CheckInActivity.this).checkedIn(Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
+                        NetworkHelper.getInstance(CheckInActivity.this).checkedIn(sessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
                                 try {
