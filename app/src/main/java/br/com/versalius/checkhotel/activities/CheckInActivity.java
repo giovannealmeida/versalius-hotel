@@ -40,7 +40,7 @@ import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class CheckInActivity extends AppCompatActivity {
 
-    private TextInputLayout tilBoookingNumber;
+    private TextInputLayout tilBookingNumber;
 
     private EditText etCheckin;
     private EditText etBookingNumber;
@@ -108,7 +108,7 @@ public class CheckInActivity extends AppCompatActivity {
     public void setUpViews(){
          /* Instanciando layout */
 
-        tilBoookingNumber = (TextInputLayout) findViewById(R.id.tilBookingNumber);
+        tilBookingNumber = (TextInputLayout) findViewById(R.id.tilBookingNumber);
 
         /* Instanciando campos */
 
@@ -481,7 +481,7 @@ public class CheckInActivity extends AppCompatActivity {
 
         // Verifica se o número de reserva foi inserido e se é um número válido
         if (!hasValidBookingNumber()) {
-            tilBoookingNumber.requestFocus();
+            tilBookingNumber.requestFocus();
             isFocusRequested = true;
         } else
             formData.put("booking_number", etBookingNumber.getText().toString());
@@ -516,14 +516,14 @@ public class CheckInActivity extends AppCompatActivity {
         mat = pat.matcher(bookingNumber);
 
         if (TextUtils.isEmpty(bookingNumber)) {
-            tilBoookingNumber.setError(getResources().getString(R.string.err_msg_empty_booking_number));
+            tilBookingNumber.setError(getResources().getString(R.string.err_msg_empty_booking_number));
             return false;
         } else if (!mat.find()) {
-            tilBoookingNumber.setError(getResources().getString(R.string.err_msg_invalid_booking_number));
+            tilBookingNumber.setError(getResources().getString(R.string.err_msg_invalid_booking_number));
             return false;
         }
 
-        tilBoookingNumber.setErrorEnabled(false);
+        tilBookingNumber.setErrorEnabled(false);
         return true;
     }
 

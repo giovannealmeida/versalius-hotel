@@ -61,6 +61,7 @@
     <string name="hint_check_out">Data e horário do check out</string>
     <string name="hint_booking_number">Número da reserva *</string>
     <string name="hint_observations">Observações..</string>
+    <string name="hint_amount">Qtd</string>
 
     <!--Labels-->
 
@@ -76,6 +77,7 @@
     <string name="lb_travel_motivation">Motivo da viagem</string>
     <string name="lb_arriving_from">Chegando de</string>
     <string name="lb_next_destination">Próximo Destino</string>
+    <string name="lb_products_consumed">Produtos Consumidos</string>
 
     <!--Mensagens de erros-->
 
@@ -204,6 +206,29 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
+    </string-array>
+
+    <!--Products Array-->
+    <string-array name="array_products">
+
+        <item>Selecione um produto..</item> <!-- Valor default -->
+        <item>Chocolate</item>
+        <item>Skol Beats</item>
+        <item>Doritos</item>
+        <item>Vinho</item>
+        <item>Água</item>
+
+    </string-array>
+
+    <string-array name="array_products_id">
+
+        <item>0</item> <!-- Valor default -->
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+
     </string-array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

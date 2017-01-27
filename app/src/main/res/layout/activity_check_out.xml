@@ -23,18 +23,34 @@
             android:paddingTop="@dimen/activity_vertical_margin">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilCheckIn"
+                android:id="@+id/tilBookingNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/etCheckIn"
+                    android:id="@+id/etBookingNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/hint_booking_number"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilCheckOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/etCheckOut"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_check_out"
-                    android:inputType="text|datetime" />
+                    android:inputType="text|datetime"
+                    android:enabled="false"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -49,11 +65,66 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/hint_observations"
-                    android:inputType="textMultiLine" />
+                    android:inputType="textMultiLine"
+                    android:enabled="false"/>
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/lb_products_consumed"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spItems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:entries="@array/array_products"
+                    />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/tilIems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etItems"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:hint="@string/hint_amount"
+                        android:inputType="number"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabAddItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@android:drawable/ic_menu_add" />
+
+
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btSingup"
+                android:id="@+id/btCheckout"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
