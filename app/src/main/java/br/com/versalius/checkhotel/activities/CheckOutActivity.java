@@ -150,6 +150,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
                 final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckOutActivity.this);
                 if (NetworkHelper.isOnline(CheckOutActivity.this)) {
                     if (isValidForm()) {
+                        Log.v("Checkout", String.valueOf(formData));
                         progressHelper.createProgressSpinner("Aguarde", "Realizando check-out.", true, false);
                         NetworkHelper.getInstance(CheckOutActivity.this).checkedIn(sessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                             @Override
