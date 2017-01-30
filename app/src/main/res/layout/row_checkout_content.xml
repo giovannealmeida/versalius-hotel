@@ -2,30 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/spItemsOut"
+    <TextView
+        android:id="@+id/tvSpProductsOutErrMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:entries="@array/array_products"
-        />
+        android:text="@string/err_msg_must_select_product"
+        android:textColor="@color/err_msg"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/tilIemsOut"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/etItemsOut"
-            android:layout_width="match_parent"
+        <Spinner
+            android:id="@+id/spItemsOut"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:hint="@string/hint_amount"
-            android:inputType="number"
+            android:layout_marginTop="20dp"
+            android:entries="@array/array_products"
             />
-    </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilIemsOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/etItemsOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:hint="@string/hint_amount"
+                android:inputType="number"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

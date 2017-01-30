@@ -75,6 +75,15 @@
                 android:text="@string/lb_products_consumed"
                 android:textSize="20sp" />
 
+            <TextView
+                android:id="@+id/tvSpProductsErrMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/err_msg_must_select_product"
+                android:textColor="@color/err_msg"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -2,6 +2,7 @@ package br.com.versalius.checkhotel.activities;
 
 import com.google.gson.Gson;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -9,14 +10,17 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -24,7 +28,10 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +47,9 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
     private TextInputLayout tilBookingNumber;
     private TextInputLayout tilItems;
     private TextInputLayout tilItemsOut;
+
+    private TextView tvSpProductsErrMessage;
+    private TextView tvSpProductsOutErrMessage;
 
     private EditText etBookingNumber;
     private EditText etCheckout;
@@ -85,6 +95,9 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         tilBookingNumber = (TextInputLayout) findViewById(R.id.tilBookingNumber);
         tilItems = (TextInputLayout) findViewById(R.id.tilIems);
 
+        // Instanciando TExtViews
+        tvSpProductsErrMessage = (TextView) findViewById(R.id.tvSpProductsErrMessage);
+
         // Instanciando Campos
         etBookingNumber = (EditText) findViewById(R.id.etBookingNumber);
         etCheckout = (EditText) findViewById(R.id.etCheckOut);
@@ -106,6 +119,44 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         etBookingNumber.setOnFocusChangeListener(this);
         etItems.setOnFocusChangeListener(this);
 
+        /* Seta o comportamento do DatePicker */
+
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar nowCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC-3"));
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                etCheckout.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        }, nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH));
+
+        /* Define a data corrente como o dia selecionável */
+        datePickerDialog.getDatePicker().setMaxDate(nowCalendar.getTimeInMillis());
+        datePickerDialog.getDatePicker().setMinDate(nowCalendar.getTimeInMillis());
+
+        etCheckout.setInputType(InputType.TYPE_NULL);
+        etCheckout.setText(dateFormatter.format(nowCalendar.getTime()));
+
+        //Abre o Date Picker com click (só funciona se o campo tiver foco)
+        etCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerDialog.show();
+            }
+        });
+
+        //Abre o Date Picker assim que o campo receber foco
+        etCheckout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                    datePickerDialog.show();
+            }
+        });
+
         // Ação do Add Button
         fabAddItems.setOnClickListener(new View.OnClickListener() {
 
@@ -116,6 +167,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
                 final View addView = layoutInflater.inflate(R.layout.row_checkout_content, null);
 
                 tilItemsOut = (TextInputLayout) addView.findViewById(R.id.tilIemsOut);
+                tvSpProductsOutErrMessage = (TextView) addView.findViewById(R.id.tvSpProductsOutErrMessage);
                 spProductsOut = (Spinner) addView.findViewById(R.id.spItemsOut);
                 etItemsOut = (EditText) addView.findViewById(R.id.etItemsOut);
 
@@ -262,11 +314,33 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         if (spProducts.getSelectedItemPosition() != 0 && !TextUtils.isEmpty(etItems.getText().toString())) {
             strItems[0] = String.valueOf(spProducts.getSelectedItemPosition());
             strQuantity[0] = etItems.getText().toString();
+            hasValidSpProducts();
+            hasValidItems();
+            fabAddItems.setEnabled(true);
+            fabAddItems.setAlpha(1f);
+        } else if (TextUtils.isEmpty(etItems.getText().toString()) && spProducts.getSelectedItemPosition() != 0){
+            tilItems.requestFocus();
+            hasValidSpProducts();
+            hasValidItems();
+            fabAddItems.setEnabled(false);
+            fabAddItems.setAlpha(0.5f);
+            isFocusRequested = true;
+        } else if (!TextUtils.isEmpty(etItems.getText().toString()) && spProducts.getSelectedItemPosition() == 0) {
+            hasValidSpProducts();
+            hasValidItems();
+            isFocusRequested = true;
+            fabAddItems.setEnabled(false);
+            fabAddItems.setAlpha(0.5f);
+        } else {
+            tilItems.setErrorEnabled(false);
+            tvSpProductsErrMessage.setVisibility(View.GONE);
+            fabAddItems.setEnabled(true);
+            fabAddItems.setAlpha(1f);
         }
 
         for (int iCount = 1; iCount <= childCount; iCount++) {
 
-            // Recura os elementos adicionados pelo Float Button na posicao iCount-1
+            // Recupera os elementos adicionados pelo Float Button na posicao iCount-1
             View thisChild = container.getChildAt(iCount-1);
 
             // Pega os elementos da posicao anterior pelo id
@@ -276,6 +350,28 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
             if (spProductsOut.getSelectedItemPosition() != 0 && !TextUtils.isEmpty(etItemsOut.getText().toString())) {
                 strItems[iCount] = String.valueOf(spProductsOut.getSelectedItemPosition());
                 strQuantity[iCount] = etItemsOut.getText().toString();
+                hasValidSpProductsOut();
+                hasValidItemsOut();
+                fabAddItems.setEnabled(true);
+                fabAddItems.setAlpha(1f);
+            } else if (TextUtils.isEmpty(etItemsOut.getText().toString()) && spProductsOut.getSelectedItemPosition() != 0){
+                tilItemsOut.requestFocus();
+                hasValidSpProductsOut();
+                hasValidItemsOut();
+                fabAddItems.setEnabled(false);
+                fabAddItems.setAlpha(0.5f);
+                isFocusRequested = true;
+            } else if (!TextUtils.isEmpty(etItemsOut.getText().toString()) && spProductsOut.getSelectedItemPosition() == 0) {
+                hasValidSpProductsOut();
+                hasValidItemsOut();
+                fabAddItems.setEnabled(false);
+                fabAddItems.setAlpha(0.5f);
+                isFocusRequested = true;
+            } else {
+                tilItemsOut.setErrorEnabled(false);
+                tvSpProductsOutErrMessage.setVisibility(View.GONE);
+                fabAddItems.setEnabled(true);
+                fabAddItems.setAlpha(1f);
             }
         }
 
@@ -326,12 +422,32 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
         if (TextUtils.isEmpty(itemsOut)) {
             tilItemsOut.setError(getResources().getString(R.string.err_msg_invalid_quantity));
-            //fabAddItems.setEnabled(false);
             return false;
         }
 
         tilItemsOut.setErrorEnabled(false);
-        //fabAddItems.setEnabled(true);
+        return true;
+    }
+
+    private boolean hasValidSpProducts() {
+
+        if (spProducts.getSelectedItemPosition() == 0) {
+            tvSpProductsErrMessage.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        tvSpProductsErrMessage.setVisibility(View.GONE);
+        return true;
+    }
+
+    private boolean hasValidSpProductsOut() {
+
+        if (spProductsOut.getSelectedItemPosition() == 0) {
+            tvSpProductsOutErrMessage.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        tvSpProductsOutErrMessage.setVisibility(View.GONE);
         return true;
     }
 

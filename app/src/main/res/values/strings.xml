@@ -115,6 +115,7 @@
     <string name="err_msg_must_select_continent">Selecione um continente</string>
     <string name="err_msg_must_select_country">Selecione um país</string>
     <string name="err_msg_must_select_state">Selecione um estado</string>
+    <string name="err_msg_must_select_product">Selecione um produto</string>
 
     <string name="err_msg_existing_email">Este email já está em uso</string>
     <string name="err_msg_password_invalid">Senha inválida</string>
