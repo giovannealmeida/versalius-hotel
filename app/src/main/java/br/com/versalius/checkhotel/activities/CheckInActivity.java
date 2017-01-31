@@ -520,7 +520,7 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
         if (spCityArriving.getSelectedItemPosition() == 0)
             formData.put("arriving_from_city_id", "");
         else
-            formData.put("arriving_from_city_id", String.valueOf(spCityArriving.getSelectedItemPosition()));
+            formData.put("arriving_from_city_id", cityIdListArriving.get(spCityListDataArriving.get(spCityArriving.getSelectedItemPosition())));
 
         /*
          * Verifica se nenhuma cidade de chegada foi selecionada, caso positivo, seta o valor da cidade
@@ -529,7 +529,7 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
         if (spCityNext.getSelectedItemPosition() == 0)
             formData.put("next_destination_city_id", "");
         else
-            formData.put("next_destination_city_id", String.valueOf(spCityNext.getSelectedItemPosition()));
+            formData.put("next_destination_city_id",  cityIdListNext.get(spCityListDataNext.get(spCityNext.getSelectedItemPosition())));
 
         formData.put("observations", etObservations.getText().toString());
         formData.put("checkin", etCheckin.getText().toString());
