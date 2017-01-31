@@ -143,21 +143,17 @@
     <string-array name="array_continents">
         <item>Selecione um continente…</item> <!-- Valor default -->
         <item>Africa</item>
-        <item>Antarctica</item>
         <item>Asia</item>
         <item>Europe</item>
         <item>North America</item>
-        <item>Oceania</item>
         <item>South America</item>
     </string-array>
     <string-array name="array_continent_id">
         <item>0</item> <!-- Valor default -->
         <item>1</item>
-        <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
-        <item>6</item>
         <item>7</item>
     </string-array>
 

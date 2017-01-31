@@ -187,6 +187,7 @@ public class NetworkHelper {
     }
 
     public void checkIn(HashMap<String, String> params, ResponseCallback callback) {
+        Log.v("Check-inTeste", String.valueOf(params));
         execute(Request.Method.POST,
                 params,
                 TAG,
