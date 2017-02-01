@@ -12,11 +12,11 @@ public class SessionHelper {
     private static SessionHelper sessionHelper;
     private static Context context;
 
-    public SessionHelper(Context context) {
+    private SessionHelper(Context context) {
         this.context = context;
     }
 
-    //O contexto é setado logo após o login para salvar o usuário e persiste até o fim da aplicação
+    //O contexto é setado é o da aplicação na LoginActivity ou na MainActivity e persiste até o fim da aplicação
     public static synchronized SessionHelper getInstance(Context context) {
         if(sessionHelper == null){
             sessionHelper = new SessionHelper(context);

@@ -70,7 +70,6 @@ import br.com.versalius.checkhotel.utils.SessionHelper;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusChangeListener {
-    SessionHelper sessionHelper;
     private String DOMINIO = "http://checkhotel.versalius.com.br/";
     private TextInputLayout tilName;
     private TextInputLayout tilEmail;
@@ -146,20 +145,15 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionHelper = new SessionHelper(ProfileAcitvity.this);
-        if (!sessionHelper.isLogged()) {
-            startActivity(new Intent(ProfileAcitvity.this, LoginActivity.class));
-        } else {
-            setContentView(R.layout.activity_profile_acitvity);
-            EventBus.getDefault().register(this);
-            formData = new HashMap<>();
-            coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-            getSupportActionBar().setLogo(R.drawable.toolbar_logo);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.title_profile);
-            setUpViews();
-        }
 
+        setContentView(R.layout.activity_profile_acitvity);
+        EventBus.getDefault().register(this);
+        formData = new HashMap<>();
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        getSupportActionBar().setLogo(R.drawable.toolbar_logo);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.title_profile);
+        setUpViews();
     }
 
     private void setUpViews() {
@@ -279,7 +273,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
         progressHelper.createProgressSpinner("Aguarde", "Carregando dados", true, false);
         if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
-            NetworkHelper.getInstance(ProfileAcitvity.this).getUser((int) sessionHelper.getUserId(), new ResponseCallback() {
+            NetworkHelper.getInstance(ProfileAcitvity.this).getUser((int) SessionHelper.getUserId(), new ResponseCallback() {
                 @Override
                 public void onSuccess(String jsonStringResponse) {
                     try {
@@ -287,8 +281,8 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                         JSONObject jsonObject = new JSONObject(jsonStringResponse);
                         if (jsonObject.getBoolean("status")) {
                             User user = new User(jsonObject);
-                            if (!sessionHelper.getAvatar().equals("null")) {
-                                new DownloadImageTask(ivProfile).execute(DOMINIO + sessionHelper.getAvatar());
+                            if (!SessionHelper.getAvatar().equals("null")) {
+                                new DownloadImageTask(ivProfile).execute(DOMINIO + SessionHelper.getAvatar());
                             }
                             etName.setText(user.getName());
                             etEmail.setText(user.getEmail());
@@ -330,14 +324,14 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     finish();
                 }
             });
-        }else{
+        } else {
             CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
             finish();
         }
 
         //pega a localização completa do usuário
         if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
-            NetworkHelper.getInstance(ProfileAcitvity.this).getGeoFull(sessionHelper.getCityId(), new ResponseCallback() {
+            NetworkHelper.getInstance(ProfileAcitvity.this).getGeoFull(SessionHelper.getCityId(), new ResponseCallback() {
                 @Override
                 public void onSuccess(String jsonStringResponse) {
                     try {
@@ -363,7 +357,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     finish();
                 }
             });
-        }else{
+        } else {
             CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
             finish();
         }
@@ -897,7 +891,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                         progressHelper.dismiss();
                                         JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                         if (jsonObject.getBoolean("status")) {
-                                            NetworkHelper.getInstance(ProfileAcitvity.this).getSession((int) sessionHelper.getUserId(), sessionHelper.getUserKey(), new ResponseCallback() {
+                                            NetworkHelper.getInstance(ProfileAcitvity.this).getSession((int) SessionHelper.getUserId(), SessionHelper.getUserKey(), new ResponseCallback() {
                                                 @Override
                                                 public void onSuccess(String jsonStringResponse) {
                                                     try {
@@ -905,7 +899,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                                         JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                                         if (jsonObject.getBoolean("status")) {
                                                             User user = new User(jsonObject.getJSONObject("data"));
-                                                            sessionHelper.saveUser(user);
+                                                            SessionHelper.saveUser(user);
                                                             setResult(RESULT_OK, null);
                                                             finish();
                                                         } else {
@@ -951,8 +945,8 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
      * Valida os campos do formulário setando mensagens de erro
      */
     private boolean isValidForm() {
-        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
-        formData.put("key", sessionHelper.getUserKey());
+        formData.put("user_id", String.valueOf(SessionHelper.getUserId()));
+        formData.put("key", SessionHelper.getUserKey());
         formData.put("birthday", etBirthday.getText().toString());
         formData.put("number", etNumber.getText().toString());
         formData.put("neighborhood", etNeighborhood.getText().toString());
@@ -1103,7 +1097,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbEmailCheck);
         findViewById(R.id.ivEmailCheck).setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        NetworkHelper.getInstance(this).emailBelongs(String.valueOf(sessionHelper.getUserId()), email, new ResponseCallback() {
+        NetworkHelper.getInstance(this).emailBelongs(String.valueOf(SessionHelper.getUserId()), email, new ResponseCallback() {
             @Override
             public void onSuccess(String jsonStringResponse) {
                 findViewById(R.id.ivEmailCheck).setVisibility(View.VISIBLE);
@@ -1176,7 +1170,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbCpfCheck);
         findViewById(R.id.ivCpfCheck).setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        NetworkHelper.getInstance(this).cpfBelongs(String.valueOf(sessionHelper.getUserId()), cpf, new ResponseCallback() {
+        NetworkHelper.getInstance(this).cpfBelongs(String.valueOf(SessionHelper.getUserId()), cpf, new ResponseCallback() {
             @Override
             public void onSuccess(String jsonStringResponse) {
                 findViewById(R.id.ivCpfCheck).setVisibility(View.VISIBLE);

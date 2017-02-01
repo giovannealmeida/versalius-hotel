@@ -1,6 +1,5 @@
 package br.com.versalius.checkhotel.activities;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -32,7 +31,6 @@ import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class AlterPasswordActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
-    SessionHelper sessionHelper;
     private HashMap<String, String> formData;
     private CoordinatorLayout coordinatorLayout;
 
@@ -47,18 +45,13 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionHelper = new SessionHelper(AlterPasswordActivity.this);
-        if (!sessionHelper.isLogged()) {
-            startActivity(new Intent(AlterPasswordActivity.this, LoginActivity.class));
-        } else {
-            setContentView(R.layout.activity_alter_password);
-            formData = new HashMap<>();
-            coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-            getSupportActionBar().setLogo(R.drawable.toolbar_logo);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.title_alter_password);
-            setUpViews();
-        }
+        setContentView(R.layout.activity_alter_password);
+        formData = new HashMap<>();
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        getSupportActionBar().setLogo(R.drawable.toolbar_logo);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.title_alter_password);
+        setUpViews();
     }
 
     private void setUpViews() {
@@ -123,7 +116,7 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
     private boolean isValidForm() {
 
         boolean isFocusRequested = false;
-        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
+        formData.put("user_id", String.valueOf(SessionHelper.getUserId()));
         /* Verifica o campo de senha*/
         if (!hasValidOldPassword()) {
             if (!isFocusRequested) {
@@ -165,7 +158,7 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbOldPasswordCheck);
         findViewById(R.id.ivOldPasswordCheck).setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        NetworkHelper.getInstance(this).validOldPassword(sessionHelper.getUserId(), oldPassword, new ResponseCallback() {
+        NetworkHelper.getInstance(this).validOldPassword(SessionHelper.getUserId(), oldPassword, new ResponseCallback() {
             @Override
             public void onSuccess(String jsonStringResponse) {
                 findViewById(R.id.ivOldPasswordCheck).setVisibility(View.VISIBLE);

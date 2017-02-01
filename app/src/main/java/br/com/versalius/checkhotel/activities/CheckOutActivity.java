@@ -65,7 +65,6 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
 
     private LinearLayout container;
     private CoordinatorLayout coordinatorLayout;
-    SessionHelper sessionHelper;
 
     private Pattern pat;
     private Matcher mat;
@@ -75,8 +74,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionHelper = new SessionHelper(CheckOutActivity.this);
-        if (!sessionHelper.isLogged()) {
+        if (!SessionHelper.isLogged()) {
             finish();
         } else {
             setContentView(R.layout.activity_check_out);
@@ -204,14 +202,14 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
                     if (isValidForm()) {
                         Log.v("Checkout", String.valueOf(formData));
                         progressHelper.createProgressSpinner("Aguarde", "Realizando check-out.", true, false);
-                        NetworkHelper.getInstance(CheckOutActivity.this).checkedIn(sessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
+                        NetworkHelper.getInstance(CheckOutActivity.this).checkedIn(SessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
                                 try {
                                     progressHelper.dismiss();
                                     JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                     if (jsonObject.getBoolean("status")) {
-                                        NetworkHelper.getInstance(CheckOutActivity.this).checkedOut(sessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
+                                        NetworkHelper.getInstance(CheckOutActivity.this).checkedOut(SessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                                             @Override
                                             public void onSuccess(String jsonStringResponse) {
                                                 try {
@@ -378,8 +376,8 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         //Toast.makeText(getBaseContext(), new Gson().toJson(strItems), Toast.LENGTH_LONG).show();
         //Toast.makeText(getBaseContext(), new Gson().toJson(strQuantity), Toast.LENGTH_LONG).show();
 
-        formData.put("user_id", String.valueOf(sessionHelper.getUserId()));
-        formData.put("key", sessionHelper.getUserKey());
+        formData.put("user_id", String.valueOf(SessionHelper.getUserId()));
+        formData.put("key", SessionHelper.getUserKey());
         formData.put("product_id", new Gson().toJson(strItems));
         formData.put("quantity", new Gson().toJson(strQuantity));
         formData.put("checkout", etCheckout.getText().toString());
