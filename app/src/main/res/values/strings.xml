@@ -151,10 +151,10 @@
     <string-array name="array_continent_id">
         <item>0</item> <!-- Valor default -->
         <item>1</item>
+        <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
-        <item>7</item>
     </string-array>
 
     <!--Vehicle Array-->
