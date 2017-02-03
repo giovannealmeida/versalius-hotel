@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
@@ -673,5 +674,20 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
                     break;
             }
         }
+    }
+
+    /**
+     * NÃO REMOVER DE NOVO!!!!
+     * Basicamente seta a ação de fechar a activity ao selecionar a seta na toolbar
+     *
+     * @param menuItem
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(menuItem);
     }
 }

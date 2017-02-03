@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -464,6 +465,20 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
         }
     }
 
+    /**
+     * NÃO REMOVER DE NOVO!!!!
+     * Basicamente seta a ação de fechar a activity ao selecionar a seta na toolbar
+     *
+     * @param menuItem
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(menuItem);
+    }
     /*
     private void listAllAddView(){
 
