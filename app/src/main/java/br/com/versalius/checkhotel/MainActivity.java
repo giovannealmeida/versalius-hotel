@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         if (!SessionHelper.isLogged()) {
             startActivity(new Intent(this, LoginActivity.class));
         } else {
-            setContentView(R.layout.activity_home);
+            setContentView(R.layout.activity_main);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
 
