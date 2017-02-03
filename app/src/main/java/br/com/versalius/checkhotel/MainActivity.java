@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String DOMINIO = "http://checkhotel.versalius.com.br/";
-    private ImageButton btCheckin;
-    private ImageButton btCheckout;
+    private AppCompatButton btCheckin;
+    private AppCompatButton btCheckout;
     private TextView tvName;
     private TextView tvEmail;
     private ImageView ivAvatar;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         /* Manipula os fragmentos no Navigation Drawer */
 
-            btCheckin = (ImageButton) findViewById(R.id.btCheckin);
+            btCheckin = (AppCompatButton) findViewById(R.id.btCheckin);
             btCheckin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            btCheckout = (ImageButton) findViewById(R.id.btCheckout);
+            btCheckout = (AppCompatButton) findViewById(R.id.btCheckout);
             btCheckout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
