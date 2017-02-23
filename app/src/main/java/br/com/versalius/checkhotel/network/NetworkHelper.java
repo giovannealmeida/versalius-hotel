@@ -32,14 +32,11 @@ public class NetworkHelper {
 
     private final String LOGIN = "/login_controller";
     private final String SIGNUP = "/login_controller/register";
-    private final String USER_UPDATE = "/user_controller/update";
-    private final String USER_DELETE = "/user_controller/delete";
-    private final String USER_UPDATE_PASSWORD = "/user_controller/alter_password";
+    private final String USER_ALTER_PASSWORD = "/user_controller/alter_password";
     private final String FORGOT_PASSWORD = "/login_controller/forgot_password_send_hash";
-    private final String CHECK_EMAIL = "/user_controller/email_check";
+    private final String CHECK_EMAIL = "/login_controller/email_check";
     private final String VALID_OLD_PASSWORD = "/user_controller/verify_passoword";
-    private final String CHECK_CPF = "/user_controller/cpf_check";
-    private final String SEND_SURVEY = "/survey";
+    private final String CHECK_CPF = "/login_controller/cpf_check";
     private final String COUNTRY = "/countries_controller";
     private final String STATE = "/states_controller";
     private final String CITY = "/cities_controller";
@@ -124,10 +121,8 @@ public class NetworkHelper {
                 callback);
     }
 
-    public void getSession(int user_id, String key, ResponseCallback callback) {
+    public void getSession(ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(user_id));
-        params.put("key", key);
         execute(Request.Method.GET,
                 null, //GET não precisa de parâmetro no corpo
                 TAG,
@@ -135,14 +130,11 @@ public class NetworkHelper {
                 callback);
     }
 
-    public void userDelete(long user_id, String key, ResponseCallback callback) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(user_id));
-        params.put("key", key);
-        execute(Request.Method.GET,
-                null, //GET não precisa de parâmetro no corpo
+    public void userDelete(ResponseCallback callback) {
+        execute(Request.Method.DELETE,
+                null,
                 TAG,
-                buildGetURL(DOMINIO + USER_DELETE, params),
+                DOMINIO + USER,
                 callback);
     }
 
@@ -155,18 +147,18 @@ public class NetworkHelper {
     }
 
     public void userUpdate(HashMap<String, String> params, ResponseCallback callback) {
-        execute(Request.Method.POST,
+        execute(Request.Method.PUT,
                 params,
                 TAG,
-                DOMINIO + USER_UPDATE,
+                DOMINIO + USER,
                 callback);
     }
 
-    public void userUpdatePassword(HashMap<String, String> params, ResponseCallback callback) {
+    public void userAlterPassword(HashMap<String, String> params, ResponseCallback callback) {
         execute(Request.Method.POST,
                 params,
                 TAG,
-                DOMINIO + USER_UPDATE_PASSWORD,
+                DOMINIO + USER_ALTER_PASSWORD,
                 callback);
     }
 
@@ -187,7 +179,6 @@ public class NetworkHelper {
     }
 
     public void checkIn(HashMap<String, String> params, ResponseCallback callback) {
-        Log.v("Check-inTeste", String.valueOf(params));
         execute(Request.Method.POST,
                 params,
                 TAG,
@@ -215,9 +206,8 @@ public class NetworkHelper {
                 callback);
     }
 
-    public void checkedIn(long user_id, int num_reserve, ResponseCallback callback) {
+    public void checkedIn(int num_reserve, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(user_id));
         params.put("num_reserve", String.valueOf(num_reserve));
 
         execute(Request.Method.GET,
@@ -227,9 +217,8 @@ public class NetworkHelper {
                 callback);
     }
 
-    public void checkedOut(long user_id, int num_reserve, ResponseCallback callback) {
+    public void checkedOut(int num_reserve, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(user_id));
         params.put("num_reserve", String.valueOf(num_reserve));
 
         execute(Request.Method.GET,
@@ -265,9 +254,8 @@ public class NetworkHelper {
                 callback);
     }
 
-    public void validOldPassword(long user_id, String password, ResponseCallback callback) {
+    public void validOldPassword(String password, ResponseCallback callback) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("user_id", String.valueOf(user_id));
         params.put("old_password", password);
 
         execute(Request.Method.GET,

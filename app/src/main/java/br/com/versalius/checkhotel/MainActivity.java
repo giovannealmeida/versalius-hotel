@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity
                             case DialogInterface.BUTTON_POSITIVE:
                                 final ProgressDialogHelper progressHelper = new ProgressDialogHelper(MainActivity.this);
                                 progressHelper.createProgressSpinner("Aguarde", "Excluindo conta.", true, false);
-                                NetworkHelper.getInstance(MainActivity.this).userDelete(SessionHelper.getUserId(), SessionHelper.getUserKey(), new ResponseCallback() {
+                                NetworkHelper.getInstance(MainActivity.this).userDelete(new ResponseCallback() {
                                     @Override
                                     public void onSuccess(String jsonStringResponse) {
                                         try {
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onFail(VolleyError error) {
                                         progressHelper.dismiss();
-                                        CustomSnackBar.make(coordinatorLayout, "Falha ao realizar cadastro", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                        CustomSnackBar.make(coordinatorLayout, "Falha ao excluir conta", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                                     }
                                 });
 

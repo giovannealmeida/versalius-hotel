@@ -1,6 +1,7 @@
 package br.com.versalius.checkhotel.network;
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -12,6 +13,8 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import br.com.versalius.checkhotel.utils.SessionHelper;
 
 /**
  * Created by jn18 on 13/01/2017.
@@ -42,9 +45,11 @@ public class CustomRequest extends Request<String> {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         HashMap<String, String> params = new HashMap<String, String>();
-        String creds = String.format("%s:%s","admin","1234");
+        String creds = String.format("%s:%s", "admin", "1234");
         String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.DEFAULT);
         params.put("Authorization", auth);
+        if (SessionHelper.getUserKey() != null)
+            params.put("X-API-KEY", SessionHelper.getUserKey());
         return params;
     }
 

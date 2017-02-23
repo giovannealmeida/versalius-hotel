@@ -77,7 +77,7 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
                 if (NetworkHelper.isOnline(AlterPasswordActivity.this)) {
                     if (isValidForm()) {
                         progressHelper.createProgressSpinner("Aguarde", "Alterando senha.", true, false);
-                        NetworkHelper.getInstance(AlterPasswordActivity.this).userUpdatePassword(formData, new ResponseCallback() {
+                        NetworkHelper.getInstance(AlterPasswordActivity.this).userAlterPassword(formData, new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
                                 try {
@@ -116,7 +116,6 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
     private boolean isValidForm() {
 
         boolean isFocusRequested = false;
-        formData.put("user_id", String.valueOf(SessionHelper.getUserId()));
         /* Verifica o campo de senha*/
         if (!hasValidOldPassword()) {
             if (!isFocusRequested) {
@@ -158,7 +157,7 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.pbOldPasswordCheck);
         findViewById(R.id.ivOldPasswordCheck).setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        NetworkHelper.getInstance(this).validOldPassword(SessionHelper.getUserId(), oldPassword, new ResponseCallback() {
+        NetworkHelper.getInstance(this).validOldPassword(oldPassword, new ResponseCallback() {
             @Override
             public void onSuccess(String jsonStringResponse) {
                 findViewById(R.id.ivOldPasswordCheck).setVisibility(View.VISIBLE);

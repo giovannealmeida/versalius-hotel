@@ -891,7 +891,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                                         progressHelper.dismiss();
                                         JSONObject jsonObject = new JSONObject(jsonStringResponse);
                                         if (jsonObject.getBoolean("status")) {
-                                            NetworkHelper.getInstance(ProfileAcitvity.this).getSession((int) SessionHelper.getUserId(), SessionHelper.getUserKey(), new ResponseCallback() {
+                                            NetworkHelper.getInstance(ProfileAcitvity.this).getSession(new ResponseCallback() {
                                                 @Override
                                                 public void onSuccess(String jsonStringResponse) {
                                                     try {

@@ -425,7 +425,7 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
                 if (NetworkHelper.isOnline(CheckInActivity.this)) {
                     if (isValidForm()) {
                         progressHelper.createProgressSpinner("Aguarde", "Realizando check-in.", true, false);
-                        NetworkHelper.getInstance(CheckInActivity.this).checkedIn(SessionHelper.getUserId(), Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
+                        NetworkHelper.getInstance(CheckInActivity.this).checkedIn(Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
                                 try {
@@ -485,8 +485,6 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
 
         // Variável de controle do formulário
         boolean isFocusRequested = false;
-        formData.put("user_id", String.valueOf(SessionHelper.getUserId()));
-        formData.put("key", SessionHelper.getUserKey());
         /*
          * Verifica se nenhum veículo foi selecionado, caso positivo, seta o valor do veículo
          * como Outro, caso negativo, seta o veículo selecionado
