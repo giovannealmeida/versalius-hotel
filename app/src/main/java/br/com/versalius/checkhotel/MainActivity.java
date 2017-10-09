@@ -19,7 +19,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,7 +37,7 @@ import br.com.versalius.checkhotel.activities.ProfileAcitvity;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class MainActivity extends AppCompatActivity
@@ -63,10 +62,16 @@ public class MainActivity extends AppCompatActivity
         SessionHelper.getInstance(this.getApplicationContext());
         if (!SessionHelper.isLogged()) {
             startActivity(new Intent(this, LoginActivity.class));
+            finish();
         } else {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             setContentView(R.layout.activity_main);
+
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+            getSupportActionBar().setElevation(0);
 
             coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 
@@ -148,7 +153,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(MainActivity.this);
+                                final ProgressBarHelper progressHelper = new ProgressBarHelper(MainActivity.this);
                                 progressHelper.createProgressSpinner("Aguarde", "Excluindo conta.", true, false);
                                 NetworkHelper.getInstance(MainActivity.this).userDelete(new ResponseCallback() {
                                     @Override

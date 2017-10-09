@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -40,7 +39,7 @@ import br.com.versalius.checkhotel.R;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class CheckOutActivity extends AppCompatActivity implements View.OnFocusChangeListener {
@@ -198,7 +197,7 @@ public class CheckOutActivity extends AppCompatActivity implements View.OnFocusC
             @Override
             public void onClick(View v) {
 
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(CheckOutActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckOutActivity.this);
                 if (NetworkHelper.isOnline(CheckOutActivity.this)) {
                     if (isValidForm()) {
                         Log.v("Checkout", String.valueOf(formData));

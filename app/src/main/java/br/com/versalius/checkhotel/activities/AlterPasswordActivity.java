@@ -26,8 +26,7 @@ import br.com.versalius.checkhotel.R;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
-import br.com.versalius.checkhotel.utils.SessionHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 
 public class AlterPasswordActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -72,7 +71,7 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
         btAlter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(AlterPasswordActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(AlterPasswordActivity.this);
 
                 if (NetworkHelper.isOnline(AlterPasswordActivity.this)) {
                     if (isValidForm()) {

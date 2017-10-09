@@ -10,7 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +22,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +31,7 @@ import br.com.versalius.checkhotel.R;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -76,7 +74,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ForgotPasswordActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(ForgotPasswordActivity.this);
 
                 if (NetworkHelper.isOnline(ForgotPasswordActivity.this)) {
                     if (isValidForm()) {

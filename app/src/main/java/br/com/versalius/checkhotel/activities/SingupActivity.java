@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
 import br.com.versalius.checkhotel.network.NetworkHelper;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 import br.com.versalius.checkhotel.R;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -542,7 +542,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                     return;
                 }
 
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
                 progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
 
                 NetworkHelper.getInstance(SingupActivity.this).getCountries(selectedContinetId, new ResponseCallback() {
@@ -603,7 +603,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                         return;
                     }
 
-                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
                     progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
 
                     NetworkHelper.getInstance(SingupActivity.this).getStates(selectedCountryId, new ResponseCallback() {
@@ -666,7 +666,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                         return;
                     }
 
-                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
                     progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);
 
                     NetworkHelper.getInstance(SingupActivity.this).getCities(selectedCountryId, new ResponseCallback() {
@@ -714,7 +714,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         btSingUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(SingupActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
 
                 if (NetworkHelper.isOnline(SingupActivity.this)) {
                     if (isValidForm()) {

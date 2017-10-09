@@ -34,8 +34,6 @@
             android:maxLines="1"
             android:textColor="@android:color/black" />
 
-        <View style="@style/AppTheme.Divider" />
-
         <EditText
             android:id="@+id/etCity"
             android:layout_width="match_parent"

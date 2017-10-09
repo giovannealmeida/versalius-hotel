@@ -1,9 +1,16 @@
 <resources>
 
-    <style name="AppTheme.NoActionBar" parent="AppTheme.Dark">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Fancy EditText -->
+        <!--Isso vai alterar o comportamento de todos os controles (checkbox, radio, slider, etc.).-->
+        <!--Para evitar problemas, deve-se criar outro tema para activities que não tenham Action Bar-->
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlActivated">@android:color/white</item>
+        <item name="colorControlHighlight">@android:color/white</item>
     </style>
 </resources>

@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 
@@ -23,7 +26,7 @@ import br.com.versalius.checkhotel.model.User;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 
 public class LoginActivity extends AppCompatActivity implements View.OnFocusChangeListener {
@@ -41,13 +44,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
         setContentView(R.layout.activity_login);
         formData = new HashMap<>();
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         setUpViews();
     }
 
     private void setUpViews() {
-        Button singup = (Button) findViewById(R.id.btSingup);
-        Button forgot = (Button) findViewById(R.id.btForgot);
-        Button login = (Button) findViewById(R.id.btLogin);
+
+        AppCompatButton singup = (AppCompatButton) findViewById(R.id.btSingup);
+        TextView forgot = (TextView) findViewById(R.id.btForgot);
+        AppCompatButton login = (AppCompatButton) findViewById(R.id.btLogin);
 
         /* Instanciando campos */
         etEmail = (EditText) findViewById(R.id.etEmail);
@@ -61,11 +69,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(LoginActivity.this);
-
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(LoginActivity.this);
                 if (NetworkHelper.isOnline(LoginActivity.this)) {
                     if (isValidForm()) {
                         progressHelper.createProgressSpinner("Aguarde", "Entrando.", true, false);
+
                         NetworkHelper.getInstance(LoginActivity.this).login(formData, new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
@@ -78,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                         finish();
                                     } else {
-                                        CustomSnackBar.make(coordinatorLayout, "Email e/ou senha incorreto(s)", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                        CustomSnackBar.make(coordinatorLayout, "E-mail e/ou senha incorreto(s)", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -88,11 +96,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                             @Override
                             public void onFail(VolleyError error) {
                                 progressHelper.dismiss();
-                                CustomSnackBar.make(coordinatorLayout, "Falha ao entrar", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                                CustomSnackBar.make(coordinatorLayout, "Falha ao realizar login", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                             }
                         });
-                    } else
-                        CustomSnackBar.make(coordinatorLayout, "Atenção! Preencha o formulário corretamente.", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.INFO).show();
+                    }
                 } else {
                     CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
                 }

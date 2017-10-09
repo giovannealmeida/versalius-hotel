@@ -65,7 +65,7 @@ import br.com.versalius.checkhotel.model.User;
 import br.com.versalius.checkhotel.network.NetworkHelper;
 import br.com.versalius.checkhotel.network.ResponseCallback;
 import br.com.versalius.checkhotel.utils.CustomSnackBar;
-import br.com.versalius.checkhotel.utils.ProgressDialogHelper;
+import br.com.versalius.checkhotel.utils.ProgressBarHelper;
 import br.com.versalius.checkhotel.utils.SessionHelper;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -270,7 +270,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
 
 
         /* Carregas os dados dos campos */
-        final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
+        final ProgressBarHelper progressHelper = new ProgressBarHelper(ProfileAcitvity.this);
         progressHelper.createProgressSpinner("Aguarde", "Carregando dados", true, false);
         if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
             NetworkHelper.getInstance(ProfileAcitvity.this).getUser((int) SessionHelper.getUserId(), new ResponseCallback() {
@@ -661,7 +661,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     return;
                 }
 
-                final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(ProfileAcitvity.this);
                 //progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
 
                 NetworkHelper.getInstance(ProfileAcitvity.this).getCountries(selectedContinetId, new ResponseCallback() {
@@ -729,7 +729,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                         return;
                     }
 
-                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(ProfileAcitvity.this);
                     //progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
 
                     NetworkHelper.getInstance(ProfileAcitvity.this).getStates(selectedCountryId, new ResponseCallback() {
@@ -799,7 +799,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                         return;
                     }
 
-                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(ProfileAcitvity.this);
                     //progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);
 
                     NetworkHelper.getInstance(ProfileAcitvity.this).getCities(selectedCountryId, new ResponseCallback() {
@@ -879,7 +879,7 @@ public class ProfileAcitvity extends AppCompatActivity implements View.OnFocusCh
                     spCity.setEnabled(true);
                     btEdit.setText("Atualizar");
                 } else {
-                    final ProgressDialogHelper progressHelper = new ProgressDialogHelper(ProfileAcitvity.this);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(ProfileAcitvity.this);
 
                     if (NetworkHelper.isOnline(ProfileAcitvity.this)) {
                         if (isValidForm()) {

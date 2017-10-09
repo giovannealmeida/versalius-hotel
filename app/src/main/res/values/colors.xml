@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#2C3E50</color>
+    <color name="colorSecondary">#5ec1ff</color>
     <color name="colorPrimaryDark">#000</color>
     <!--<color name="colorAccent">#FF4081</color>-->
-    <color name="colorAccent">#337AB7</color>
-    <color name="colorLink">#F47D67</color>
+    <color name="colorAccent">#ec2374</color>
+    <color name="colorLink">#dce775</color>
     <color name="err_msg">#D50000</color>
 
     <!--SnackBar-->
