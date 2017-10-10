@@ -421,10 +421,10 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
         btCheckin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this,null);
                 if (NetworkHelper.isOnline(CheckInActivity.this)) {
                     if (isValidForm()) {
-                        progressHelper.createProgressSpinner("Aguarde", "Realizando check-in.", true, false);
+                        progressHelper.createProgressSpinner();
                         NetworkHelper.getInstance(CheckInActivity.this).checkedIn(Integer.parseInt(etBookingNumber.getText().toString()), new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {
@@ -555,8 +555,8 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
                                final HashMap<String, String> countryIdList, final Spinner spCountry,
                                final ArrayAdapter<String> spCountryArrayAdapter) {
 
-        final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this);
-        progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
+        final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this,null);
+        progressHelper.createProgressSpinner();
 
         NetworkHelper.getInstance(CheckInActivity.this).getCountries(selectedContinetId, new ResponseCallback() {
             @Override
@@ -592,8 +592,8 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
                              final HashMap<String, String> stateIdList, final Spinner spState,
                              final ArrayAdapter<String> spStateArrayAdapter) {
 
-        final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this);
-        progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
+        final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this,null);
+        progressHelper.createProgressSpinner();
 
         NetworkHelper.getInstance(CheckInActivity.this).getStates(selectedCountryId, new ResponseCallback() {
             @Override
@@ -629,8 +629,8 @@ public class CheckInActivity extends AppCompatActivity implements OnFocusChangeL
                             final HashMap<String, String> cityIdList, final Spinner spCity,
                             final ArrayAdapter<String> spCityArrayAdapter) {
 
-        final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this);
-        progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);
+        final ProgressBarHelper progressHelper = new ProgressBarHelper(CheckInActivity.this,null);
+        progressHelper.createProgressSpinner();
 
         NetworkHelper.getInstance(CheckInActivity.this).getCities(selectedCountryId, new ResponseCallback() {
             @Override

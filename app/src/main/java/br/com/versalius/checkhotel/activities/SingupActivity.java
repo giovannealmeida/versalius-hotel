@@ -542,8 +542,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                     return;
                 }
 
-                final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
-                progressHelper.createProgressSpinner("Aguarde", "Atualizando países", true, false);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this,null);
+                progressHelper.createProgressSpinner();
 
                 NetworkHelper.getInstance(SingupActivity.this).getCountries(selectedContinetId, new ResponseCallback() {
                     @Override
@@ -603,8 +603,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                         return;
                     }
 
-                    final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
-                    progressHelper.createProgressSpinner("Aguarde", "Atualizando estados", true, false);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this,null);
+                    progressHelper.createProgressSpinner();
 
                     NetworkHelper.getInstance(SingupActivity.this).getStates(selectedCountryId, new ResponseCallback() {
                         @Override
@@ -666,8 +666,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
                         return;
                     }
 
-                    final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
-                    progressHelper.createProgressSpinner("Aguarde", "Atualizando cidades", true, false);
+                    final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this,null);
+                    progressHelper.createProgressSpinner();
 
                     NetworkHelper.getInstance(SingupActivity.this).getCities(selectedCountryId, new ResponseCallback() {
                         @Override
@@ -714,11 +714,11 @@ public class SingupActivity extends AppCompatActivity implements View.OnFocusCha
         btSingUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(SingupActivity.this,null);
 
                 if (NetworkHelper.isOnline(SingupActivity.this)) {
                     if (isValidForm()) {
-                        progressHelper.createProgressSpinner("Aguarde", "Realizando cadastro.", true, false);
+                        progressHelper.createProgressSpinner();
                         NetworkHelper.getInstance(SingupActivity.this).doSignUp(formData, new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {

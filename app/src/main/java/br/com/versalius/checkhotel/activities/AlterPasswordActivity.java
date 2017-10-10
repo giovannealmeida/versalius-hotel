@@ -71,11 +71,11 @@ public class AlterPasswordActivity extends AppCompatActivity implements View.OnF
         btAlter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressBarHelper progressHelper = new ProgressBarHelper(AlterPasswordActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(AlterPasswordActivity.this,null);
 
                 if (NetworkHelper.isOnline(AlterPasswordActivity.this)) {
                     if (isValidForm()) {
-                        progressHelper.createProgressSpinner("Aguarde", "Alterando senha.", true, false);
+                        progressHelper.createProgressSpinner();
                         NetworkHelper.getInstance(AlterPasswordActivity.this).userAlterPassword(formData, new ResponseCallback() {
                             @Override
                             public void onSuccess(String jsonStringResponse) {

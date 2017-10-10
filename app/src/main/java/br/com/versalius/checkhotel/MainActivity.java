@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                final ProgressBarHelper progressHelper = new ProgressBarHelper(MainActivity.this);
-                                progressHelper.createProgressSpinner("Aguarde", "Excluindo conta.", true, false);
+                                final ProgressBarHelper progressHelper = new ProgressBarHelper(MainActivity.this,null);
+                                progressHelper.createProgressSpinner();
                                 NetworkHelper.getInstance(MainActivity.this).userDelete(new ResponseCallback() {
                                     @Override
                                     public void onSuccess(String jsonStringResponse) {

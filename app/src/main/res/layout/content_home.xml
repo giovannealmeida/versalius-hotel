@@ -34,7 +34,7 @@
                 android:background="@color/colorAccent"
                 android:drawableRight="@drawable/ic_check_in"
                 android:paddingRight="15dp"
-                android:text="@string/checkin" />
+                android:text="@string/underlined_checkin" />
 
 
             <android.support.v7.widget.AppCompatButton
@@ -44,7 +44,7 @@
                 android:background="@color/colorLink"
                 android:drawableRight="@drawable/ic_check_out"
                 android:paddingRight="15dp"
-                android:text="@string/checkout" />
+                android:text="@string/underlined_checkout" />
 
         </LinearLayout>
 

@@ -38,8 +38,6 @@
         <activity
             android:name=".activities.CheckOutActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".activities.ForgotPasswordActivity"
-            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ProfileAcitvity"
             android:screenOrientation="portrait" />

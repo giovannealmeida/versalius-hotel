@@ -4,12 +4,12 @@
     <string name="action_login">ENTRAR</string>
     <string name="copyright">© Copyright 2016 VERSALIUS</string>
     <string name="forgot_password">Esqueci minha senha</string>
-    <string name="singup"><u>Cadastre-se</u></string>
-    <string name="alter"><u>Alterar</u></string>
+    <string name="underlined_singup"><u>Cadastre-se</u></string>
+    <string name="underlined_alter"><u>Alterar</u></string>
 
-    <string name="checkin"><u>Check in</u></string>
-    <string name="checkout"><u>Check out</u></string>
-    <string name="send"><u>Enviar</u></string>
+    <string name="underlined_checkin"><u>Check in</u></string>
+    <string name="underlined_checkout"><u>Check out</u></string>
+    <string name="underlined_send"><u>Enviar</u></string>
     <string name="dont_have_acc">Não possui uma conta?</string>
 
     <!--Titles-->
@@ -233,14 +233,15 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="title_activity_profile_acitvity">ProfileAcitvity</string>
     <string name="title_activity_alter_password">AlterPasswordActivity</string>
+    <string name="dialog_insert_email">Insira seu e-mail</string>
+    <string name="title_password_recovery_dialog">Recuperação de senha</string>
+    <string name="dialog_action_send">Enviar</string>
+    <string name="dialog_action_ok">Ok</string>
+    <string name="dialog_action_yes">Sim</string>
+    <string name="dialog_action_no">Não</string>
+    <string name="dialog_action_cancel">Cancelar</string>
 
 </resources>

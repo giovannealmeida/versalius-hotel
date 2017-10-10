@@ -1,16 +1,20 @@
 package br.com.versalius.checkhotel.activities;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -19,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import br.com.versalius.checkhotel.MainActivity;
 import br.com.versalius.checkhotel.R;
@@ -36,7 +41,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     private CoordinatorLayout coordinatorLayout;
     private HashMap<String, String> formData;
     private final int SIGNUP_CODE = 1;
-    private final int FORGOT_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +73,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressBarHelper progressHelper = new ProgressBarHelper(LoginActivity.this);
+                final ProgressBarHelper progressHelper = new ProgressBarHelper(LoginActivity.this, LoginActivity.this.findViewById(R.id.form));
                 if (NetworkHelper.isOnline(LoginActivity.this)) {
                     if (isValidForm()) {
-                        progressHelper.createProgressSpinner("Aguarde", "Entrando.", true, false);
+                        progressHelper.createProgressSpinner();
 
                         NetworkHelper.getInstance(LoginActivity.this).login(formData, new ResponseCallback() {
                             @Override
@@ -117,7 +121,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
         forgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(LoginActivity.this, ForgotPasswordActivity.class), FORGOT_CODE);
+                DialogFragment dialog = new PasswordRecoveryDialogFragment();
+                dialog.show(getSupportFragmentManager(), "dialog");
             }
         });
     }
@@ -195,10 +200,84 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 if (resultCode == SingupActivity.RESULT_OK)
                     CustomSnackBar.make(coordinatorLayout, "Cadastro realizado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
                 break;
-            case FORGOT_CODE:
-                if (resultCode == ForgotPasswordActivity.RESULT_OK)
-                    CustomSnackBar.make(coordinatorLayout, "Email de redefinição de senha enviado com sucesso", Snackbar.LENGTH_SHORT, CustomSnackBar.SnackBarType.SUCCESS).show();
-                break;
+        }
+    }
+
+    public static class PasswordRecoveryDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_password_recovery, null);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setView(view)
+                    .setCancelable(false)
+                    .setMessage(R.string.dialog_insert_email)
+                    .setTitle(R.string.title_password_recovery_dialog)
+                    .setPositiveButton(R.string.dialog_action_send, null)
+                    .setNegativeButton(R.string.dialog_action_cancel, null);
+
+            // Create the AlertDialog object and return it
+           return builder.create();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+            final AlertDialog dialog = (AlertDialog)getDialog();
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText etEmail = (EditText) dialog.findViewById(R.id.etEmail);
+
+                    String email = etEmail.getText().toString().trim();
+                    if (TextUtils.isEmpty(email)) {
+                        etEmail.setError(getResources().getString(R.string.err_msg_empty_email));
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        etEmail.setError(getResources().getString(R.string.err_msg_invalid_email));
+                    } else {
+                        sendRecoveryEmail(email);
+                        dialog.dismiss();
+                    }
+                }
+            });
+        }
+
+        private void sendRecoveryEmail(String email) {
+            final ProgressBarHelper progressHelper = new ProgressBarHelper(getActivity(), null);
+
+            final ViewGroup coordinatorLayout = getActivity().findViewById(R.id.coordinatorLayout);
+            if (NetworkHelper.isOnline(getActivity())) {
+                progressHelper.createProgressSpinner();
+                HashMap<String, String> formData = new HashMap<>();
+                formData.put("email", email);
+                NetworkHelper.getInstance(getActivity()).forgotPassword(formData, new ResponseCallback() {
+                    @Override
+                    public void onSuccess(String jsonStringResponse) {
+                        try {
+                            progressHelper.dismiss();
+                            JSONObject jsonObject = new JSONObject(jsonStringResponse);
+                            if (jsonObject.getBoolean("status")) {
+                                CustomSnackBar.make(coordinatorLayout, "E-mail de redefinição de senha enviado", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.SUCCESS).show();
+                            } else {
+                                CustomSnackBar.make(coordinatorLayout, "Falha ao enviar email de redefinição de senha", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(VolleyError error) {
+                        progressHelper.dismiss();
+                        CustomSnackBar.make(coordinatorLayout, "Falha ao enviar email de redefinição de senha", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+                    }
+                });
+            } else {
+                CustomSnackBar.make(coordinatorLayout, "Você está offline", Snackbar.LENGTH_LONG, CustomSnackBar.SnackBarType.ERROR).show();
+            }
         }
     }
 }

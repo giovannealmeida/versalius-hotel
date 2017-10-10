@@ -483,7 +483,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                android:text="@string/singup" />
+                android:text="@string/underlined_singup" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

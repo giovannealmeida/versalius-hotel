@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorSecondary"
                 android:elevation="4dp"
-                android:text="@string/singup"
+                android:text="@string/underlined_singup"
                 android:textColor="@android:color/white" />
         </LinearLayout>
         <!--<TextView-->
